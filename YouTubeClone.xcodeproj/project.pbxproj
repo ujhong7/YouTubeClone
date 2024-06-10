@@ -20,6 +20,7 @@
 		1D8237072C031B8700D83135 /* Videos.json in Resources */ = {isa = PBXBuildFile; fileRef = 1D8237052C031B8700D83135 /* Videos.json */; };
 		1D8237092C032B5D00D83135 /* Video2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D8237082C032B5D00D83135 /* Video2.swift */; };
 		1DAEB70C2C14329500BB6843 /* CommentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DAEB70B2C14329500BB6843 /* CommentDetailView.swift */; };
+		1DAEB7102C16ED8D00BB6843 /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DAEB70F2C16ED8D00BB6843 /* CommentTableViewCell.swift */; };
 		1DB5088E2BCD49410096A747 /* MainTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB5088D2BCD49410096A747 /* MainTabController.swift */; };
 		1DB508912BCD4A190096A747 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB508902BCD4A190096A747 /* HomeViewController.swift */; };
 		1DB508932BCD4A200096A747 /* ShortsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB508922BCD4A200096A747 /* ShortsViewController.swift */; };
@@ -71,6 +72,7 @@
 		1D8237062C031B8700D83135 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = en; path = en.lproj/Videos.json; sourceTree = "<group>"; };
 		1D8237082C032B5D00D83135 /* Video2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video2.swift; sourceTree = "<group>"; };
 		1DAEB70B2C14329500BB6843 /* CommentDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentDetailView.swift; sourceTree = "<group>"; };
+		1DAEB70F2C16ED8D00BB6843 /* CommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
 		1DB5088D2BCD49410096A747 /* MainTabController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabController.swift; sourceTree = "<group>"; };
 		1DB508902BCD4A190096A747 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		1DB508922BCD4A200096A747 /* ShortsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortsViewController.swift; sourceTree = "<group>"; };
@@ -290,6 +292,7 @@
 			children = (
 				1DD0F7CA2C0A26D500C5AB80 /* VideoViewController.swift */,
 				1DAEB70B2C14329500BB6843 /* CommentDetailView.swift */,
+				1DAEB70F2C16ED8D00BB6843 /* CommentTableViewCell.swift */,
 			);
 			path = DetailViedeoView;
 			sourceTree = "<group>";
@@ -459,6 +462,7 @@
 				1DB5088E2BCD49410096A747 /* MainTabController.swift in Sources */,
 				1DE69EFB2BB19E5A0001CAB4 /* LoginInfoStackView.swift in Sources */,
 				1DD0F7D52C0D958600C5AB80 /* VideoTableView.swift in Sources */,
+				1DAEB7102C16ED8D00BB6843 /* CommentTableViewCell.swift in Sources */,
 				1D3CAADC2BBB13F000D20406 /* UILabel+.swift in Sources */,
 				1DB508992BCD4A390096A747 /* StorageViewController.swift in Sources */,
 				1DE69EE32BB185750001CAB4 /* SceneDelegate.swift in Sources */,

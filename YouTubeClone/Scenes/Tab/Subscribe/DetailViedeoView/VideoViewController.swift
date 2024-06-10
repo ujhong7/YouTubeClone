@@ -43,9 +43,9 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     }()
     
     private let profileView: UIView = {
-       let view = UIView()
+        let view = UIView()
         
-       return view
+        return view
     }()
     
     private let profileImageButton: UIButton = {
@@ -125,13 +125,17 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     
     private var panGestureRecognizer: UIPanGestureRecognizer!
     
+    let scrollView = UIScrollView()
+    
+    let contentView = UIView()
+    
+    var tableViewHeightConstraint: NSLayoutConstraint!
+    
     // MARK: - LifeCycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         view.backgroundColor = .white
-        
         requestYouTubeAPI()
         setupVideoPlayer()
         setupAutoLayout()
@@ -164,98 +168,24 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
         tabViewCollectionView.register(TabButtonCollectionViewCell.self, forCellWithReuseIdentifier: "TabButtonCell")
     }
     
-    func setupAutoLayout() {
-        view.addSubview(webView)
-        view.addSubview(titleLabel)
-        view.addSubview(subtitleLabel)
-        view.addSubview(profileImageButton)
-        view.addSubview(channelNameLabel)
-        view.addSubview(subscriberCountLabel)
-        view.addSubview(tabViewCollectionView)
-        view.addSubview(commentView)
-        
-        commentView.addSubview(commentTitleLabel)
-        commentView.addSubview(commentCountLabel)
-        commentView.addSubview(commentLabel)
-        
-        view.addSubview(tableView)
-        
-        webView.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        profileImageButton.translatesAutoresizingMaskIntoConstraints = false
-        channelNameLabel.translatesAutoresizingMaskIntoConstraints = false
-        subscriberCountLabel.translatesAutoresizingMaskIntoConstraints = false
-        tabViewCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        commentView.translatesAutoresizingMaskIntoConstraints = false
-        commentTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        commentCountLabel.translatesAutoresizingMaskIntoConstraints = false
-        commentLabel.translatesAutoresizingMaskIntoConstraints = false
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            webView.heightAnchor.constraint(equalToConstant: 212),
-            
-            titleLabel.topAnchor.constraint(equalTo: webView.bottomAnchor, constant: 16),
-            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 13),
-            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -13),
-            
-            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 7),
-            subtitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 13),
-            subtitleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -13),
-            
-            profileImageButton.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 12),
-            profileImageButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 13),
-            
-            channelNameLabel.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 20),
-            channelNameLabel.leadingAnchor.constraint(equalTo: profileImageButton.trailingAnchor, constant: 9),
-            
-            subscriberCountLabel.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 22),
-            subscriberCountLabel.leadingAnchor.constraint(equalTo: channelNameLabel.trailingAnchor, constant: 9),
-            
-            tabViewCollectionView.topAnchor.constraint(equalTo: profileImageButton.bottomAnchor, constant: 16),
-            tabViewCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tabViewCollectionView.trailingAnchor.constraint(equalTo:view.trailingAnchor),
-            tabViewCollectionView.heightAnchor.constraint(equalToConstant: 48),
-            
-            commentView.topAnchor.constraint(equalTo: tabViewCollectionView.bottomAnchor, constant: 16),
-            commentView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 13),
-            commentView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -13),
-            commentView.heightAnchor.constraint(equalToConstant: 65),
-            
-            commentTitleLabel.topAnchor.constraint(equalTo: commentView.topAnchor, constant: 12),
-            commentTitleLabel.leadingAnchor.constraint(equalTo: commentView.leadingAnchor, constant: 10),
-            
-            commentCountLabel.topAnchor.constraint(equalTo: commentView.topAnchor, constant: 15),
-            commentCountLabel.leadingAnchor.constraint(equalTo: commentTitleLabel.trailingAnchor, constant: 5),
-            
-            commentLabel.topAnchor.constraint(equalTo: commentTitleLabel.bottomAnchor, constant: 8),
-            commentLabel.leadingAnchor.constraint(equalTo: commentView.leadingAnchor, constant: 10),
-            
-            tableView.topAnchor.constraint(equalTo: commentView.bottomAnchor, constant: 16),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
-        ])
-    }
-    
     func setupTapGesture() {
         // 탭 제스처 인식기 추가
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleCommentViewTap))
         commentView.addGestureRecognizer(tapGesture)
     }
     
+    func setupPanGesture() {
+        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
+        webView.addGestureRecognizer(panGestureRecognizer)
+        panGestureRecognizer.delegate = self // 이 줄 추가
+    }
+    
     @objc private func handleCommentViewTap() {
-        // 댓글 뷰 추가
         view.addSubview(commentDetailView)
         commentDetailView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            //commentDetailView.topAnchor.constraint(equalTo: webView.bottomAnchor),
-            commentDetailView.topAnchor.constraint(equalTo: view.topAnchor, constant: 300),
+            commentDetailView.topAnchor.constraint(equalTo: webView.bottomAnchor),
             commentDetailView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             commentDetailView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             commentDetailView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
@@ -268,12 +198,6 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
         }
     }
     
-    func setupPanGesture() {
-        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
-        webView.addGestureRecognizer(panGestureRecognizer)
-        panGestureRecognizer.delegate = self // 이 줄 추가
-    }
- 
     @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
         let translation = gesture.translation(in: view)
         let velocity = gesture.velocity(in: view)
@@ -299,6 +223,122 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     @objc func dismissViewController() {
         dismiss(animated: true, completion: nil)
     }
+}
+
+// MARK: - Autolayout
+
+extension VideoViewController {
+    
+    func setupAutoLayout() {
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        profileImageButton.translatesAutoresizingMaskIntoConstraints = false
+        channelNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        subscriberCountLabel.translatesAutoresizingMaskIntoConstraints = false
+        tabViewCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        commentView.translatesAutoresizingMaskIntoConstraints = false
+        commentTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        commentCountLabel.translatesAutoresizingMaskIntoConstraints = false
+        commentLabel.translatesAutoresizingMaskIntoConstraints = false
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(webView)
+        view.addSubview(scrollView)
+        
+        scrollView.addSubview(contentView)
+        
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(subtitleLabel)
+        contentView.addSubview(profileImageButton)
+        contentView.addSubview(channelNameLabel)
+        contentView.addSubview(subscriberCountLabel)
+        contentView.addSubview(tabViewCollectionView)
+        contentView.addSubview(commentView)
+        contentView.addSubview(tableView)
+        
+        commentView.addSubview(commentTitleLabel)
+        commentView.addSubview(commentCountLabel)
+        commentView.addSubview(commentLabel)
+        
+        // 테이블 뷰의 높이 제약 조건 설정
+        tableViewHeightConstraint = tableView.heightAnchor.constraint(equalToConstant: 400) // 임시 높이
+        tableViewHeightConstraint.isActive = true
+        
+        NSLayoutConstraint.activate([
+            webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            webView.heightAnchor.constraint(equalToConstant: 212),
+            
+            scrollView.topAnchor.constraint(equalTo: webView.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 13),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -13),
+            
+            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 7),
+            subtitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 13),
+            subtitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -13),
+            
+            profileImageButton.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 12),
+            profileImageButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 13),
+            profileImageButton.heightAnchor.constraint(equalToConstant: 40),
+            profileImageButton.widthAnchor.constraint(equalToConstant: 40),
+            
+            channelNameLabel.centerYAnchor.constraint(equalTo: profileImageButton.centerYAnchor),
+            channelNameLabel.leadingAnchor.constraint(equalTo: profileImageButton.trailingAnchor, constant: 9),
+            
+            subscriberCountLabel.centerYAnchor.constraint(equalTo: channelNameLabel.centerYAnchor),
+            subscriberCountLabel.leadingAnchor.constraint(equalTo: channelNameLabel.trailingAnchor, constant: 9),
+            
+            tabViewCollectionView.topAnchor.constraint(equalTo: profileImageButton.bottomAnchor, constant: 16),
+            tabViewCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            tabViewCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            tabViewCollectionView.heightAnchor.constraint(equalToConstant: 48),
+            
+            commentView.topAnchor.constraint(equalTo: tabViewCollectionView.bottomAnchor, constant: 16),
+            commentView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 13),
+            commentView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -13),
+            commentView.heightAnchor.constraint(equalToConstant: 65),
+            
+            commentTitleLabel.topAnchor.constraint(equalTo: commentView.topAnchor, constant: 12),
+            commentTitleLabel.leadingAnchor.constraint(equalTo: commentView.leadingAnchor, constant: 10),
+            
+            commentCountLabel.topAnchor.constraint(equalTo: commentView.topAnchor, constant: 15),
+            commentCountLabel.leadingAnchor.constraint(equalTo: commentTitleLabel.trailingAnchor, constant: 5),
+            
+            commentLabel.topAnchor.constraint(equalTo: commentTitleLabel.bottomAnchor, constant: 8),
+            commentLabel.leadingAnchor.constraint(equalTo: commentView.leadingAnchor, constant: 10),
+            
+            tableView.topAnchor.constraint(equalTo: commentView.bottomAnchor, constant: 16),
+            tableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            tableViewHeightConstraint // 테이블뷰의 높이 제약 조건 활성화
+        ])
+        
+        // 테이블뷰의 고유한 크기를 동적으로 설정
+        tableView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "contentSize", let tableView = object as? UITableView {
+            tableViewHeightConstraint.constant = tableView.contentSize.height
+        }
+    }
+    
 }
 
 // MARK: - 비디오 to 비디오
@@ -424,4 +464,14 @@ extension VideoViewController: UITableViewDelegate {
         presentVideoViewController(with: item)
     }
     
+}
+
+// MARK: - UIScrollViewDelegate
+
+extension VideoViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y < 0 {
+            scrollView.contentOffset.y = 0
+        }
+    }
 }
