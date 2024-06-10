@@ -68,6 +68,26 @@ class APIManager {
                   }
               }
       }
+    
+    // MARK: - 구독 클릭 후 데이터 가져오기
+    func requestSubscribeVideoData(id: String, completion: @escaping (Result<[Item], AFError>) -> Void) {
+        let channelURL = "https://www.googleapis.com/youtube/v3/search?key=\(API.key)&channelId=\(id)&part=snippet&type=video"
+        let parameters: [String: Any] = [
+            "maxResults": 10,
+        ]
+        
+        AF.request(channelURL, parameters: parameters)
+            .validate()
+            .responseDecodable(of: YouTubeDTO.self) { response in
+                switch response.result {
+                case .success(let channelDTO):
+                    completion(.success(channelDTO.items))
+                case .failure(let error):
+                    print("Error: \(error.localizedDescription)") // 에러를 로깅
+                    completion(.failure(error))
+                }
+            }
+    }
 
 }
 
