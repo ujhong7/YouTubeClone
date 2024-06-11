@@ -20,14 +20,7 @@ final class SubscribeViewController: UIViewController {
     
     private let tabTitles = ["전체", "오늘", "동영상", "Shorts",
                              "이어서 시청하기", "라이브", "게시물"]
-    
-    
-//    /// 유튜브 API 데이터
-//    private var items: [Item] = []
-//    
-//    //    var channelItems: [ChannelItem] = []
-//    private var channelItems: [String: ChannelItem] = [:]
-    
+
     private var channelCollectionView: ChannelCollectionView = {
         let view = ChannelCollectionView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -45,12 +38,19 @@ final class SubscribeViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-
-//    private var refreshControl = UIRefreshControl()
     
-    /// ,,,
+    /// 구독 클릭시 생성되는 테이블뷰
+    private var subscribeTableView: VideoTableView = {
+        let view = VideoTableView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    /// 제약조건 설정을 위한 프로퍼티
     private var channelViewHeightConstraint: NSLayoutConstraint!
     private var tabViewHeightConstraint: NSLayoutConstraint!
+    private var subscribeTableViewTopConstraint: NSLayoutConstraint!
+    
     
     // MARK: - LifeCycle
     
@@ -61,11 +61,32 @@ final class SubscribeViewController: UIViewController {
         setupRightNavigationItems()
         configure()
         setupAutoLayout()
-        //setupRefreshControl()
     }
     
     // MARK: - Methods
+    private func configure() {
+        view.backgroundColor = .systemBackground
+        view.addSubview(channelCollectionView)
+        view.addSubview(tabViewCollectionView)
+        view.addSubview(videoTableView)
+        view.addSubview(subscribeTableView)
+        
+        videoTableView.parentViewController = self
+        
+        /// 구독 채널 클릭했을때 좌측 상단 네비게이션바 버튼 수정 + 테이블뷰 생성
+        channelCollectionView.onDataReceived = { [weak self] videos in
+            
+            if let channelTitle = videos.first?.snippet.channelTitle {
+                self?.setupSubscribeLeftNavigationItem(title: channelTitle)
+            }
+            
+            self?.subscribeTableView.updateVideos(videos) {
+                self?.showSubscribeTableView()
+            }
+        }
+    }
     
+    /// 좌측 상단 네비게이션바 설정
     private func setupLeftNavigationItem() {
         let logoImage = UIImage(named: "YouTubeLogo")
         let logoImageView = UIImageView(image: logoImage)
@@ -74,32 +95,61 @@ final class SubscribeViewController: UIViewController {
         navigationItem.leftBarButtonItem = logoItem
     }
     
+    /// 우측 상단 네비게이션바 설정
     private func setupRightNavigationItems() {
-        let windowSharingButton = UIBarButtonItem(image: UIImage(named: "windowSharingIcon"), style: .plain, target: self, action: #selector(windowSharingButtonTapped))
-        let notificationButton = UIBarButtonItem(image: UIImage(named: "NotificationIcon"), style: .plain, target: self, action: #selector(notificationButtonTapped))
-        let searchButton = UIBarButtonItem(image: UIImage(named: "SearchIcon"), style: .plain, target: self, action: #selector(searchButtonTapped))
+        let windowSharingButton = UIBarButtonItem(image: UIImage(named: "windowSharingIcon"),
+                                                  style: .plain,
+                                                  target: self,
+                                                  action: #selector(windowSharingButtonTapped))
+        let notificationButton = UIBarButtonItem(image: UIImage(named: "NotificationIcon"),
+                                                 style: .plain,
+                                                 target: self,
+                                                 action: #selector(notificationButtonTapped))
+        let searchButton = UIBarButtonItem(image: UIImage(named: "SearchIcon"),
+                                           style: .plain,
+                                           target: self,
+                                           action: #selector(searchButtonTapped))
         navigationItem.rightBarButtonItems = [searchButton, notificationButton, windowSharingButton]
     }
     
-    private func configure() {
-        view.backgroundColor = .systemBackground
-        view.addSubview(channelCollectionView)
-        view.addSubview(tabViewCollectionView)
-        view.addSubview(videoTableView)
-        
-        videoTableView.parentViewController = self
-        channelCollectionView.onDataReceived = { [weak self] videos in
-            
-            // 네비게이션 타이틀 바꿔야함 + 테이블뷰도 새로운 방식으로 노출될 수 있도록 해야함
-            self?.videoTableView.updateVideos(videos)
-        }
+    /// 구독 채널 클릭시 좌측 상단 네비게이션바 설정
+    func setupSubscribeLeftNavigationItem(title: String) {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        button.setTitle(title, for: .normal)
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
+        button.tintColor = .black
+        button.addTarget(self, action: #selector(hideSubscribeTableView), for: .touchUpInside)
+        button.sizeToFit()
+        let barButtonItem = UIBarButtonItem(customView: button)
+        navigationItem.leftBarButtonItem = barButtonItem
     }
     
-//    private func setupRefreshControl() {
-//        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
-//        videoTableView.refreshControl = refreshControl
-//    }
+    private func showSubscribeTableView() {
+        [tabViewCollectionView, videoTableView].forEach { view in
+            view.isHidden = true
+        }
+        animateSubscribeTableView(isShow: true)
+    }
     
+    /// 구독 채널을 눌렀을때 올라오는 테이블뷰를 닫기 위함
+    @objc private func hideSubscribeTableView() {
+        setupLeftNavigationItem()
+        [tabViewCollectionView, videoTableView].forEach { view in
+            view.isHidden = false
+        }
+        animateSubscribeTableView(isShow: false)
+    }
+    
+    private func animateSubscribeTableView(isShow: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            self?.subscribeTableViewTopConstraint.constant = isShow ? 0 : 800
+            
+            UIView.animate(withDuration: 0.3) {
+                self?.view.layoutIfNeeded()
+            }
+        }
+    }
 }
 
 // MARK: - @objc
@@ -118,14 +168,9 @@ extension SubscribeViewController {
         print(#function)
     }
     
-//    @objc private func refreshData() {
-//        print(#function)
-//        // 리프레시 인디케이터가 잠시 고정되도록
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-//            self.requestYouTubeAPI()
-//        }
-//    }
-    
+    @objc func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
+    }
 }
 
 // MARK: - Layout
@@ -135,6 +180,7 @@ extension SubscribeViewController {
     private func setupAutoLayout() {
         channelViewHeightConstraint = channelCollectionView.heightAnchor.constraint(equalToConstant: UI.channelViewHeight)
         tabViewHeightConstraint = tabViewCollectionView.heightAnchor.constraint(equalToConstant: UI.tabViewHeight)
+        subscribeTableViewTopConstraint = subscribeTableView.topAnchor.constraint(equalTo: channelCollectionView.bottomAnchor, constant: 800)
         
         NSLayoutConstraint.activate([
             channelCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -152,7 +198,12 @@ extension SubscribeViewController {
             videoTableView.topAnchor.constraint(equalTo: tabViewCollectionView.bottomAnchor),
             videoTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             videoTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            videoTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+            videoTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            
+            subscribeTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            subscribeTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            subscribeTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            subscribeTableViewTopConstraint
         ])
     }
     

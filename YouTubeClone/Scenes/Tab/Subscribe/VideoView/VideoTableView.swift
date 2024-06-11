@@ -39,9 +39,10 @@ final class VideoTableView: UITableView {
     }
     
     // ⭐️⭐️⭐️
-    func updateVideos(_ videos: [Item]) {
+    func updateVideos(_ videos: [Item], completion: @escaping () -> Void) {
         self.items = videos
         reloadData()
+        completion()
     }
     
     // ☀️ private 프로퍼티를 다른곳에서 사용하는 방법...메서드를 만들자
