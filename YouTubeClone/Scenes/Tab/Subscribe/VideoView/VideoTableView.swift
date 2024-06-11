@@ -15,14 +15,7 @@ final class VideoTableView: UITableView {
     
     /// 유튜브 API 데이터
     private var items: [Item] = []
-    
-    //    var channelItems: [ChannelItem] = []
     private var channelItems: [String: ChannelItem] = [:]
-    
-//    var items: [Item] = []
-//    
-//    private var channelItems: [String: ChannelItem] = [:]
-    
     
     // MARK: - Init
     
@@ -40,9 +33,15 @@ final class VideoTableView: UITableView {
     
     private func configureTableView() {
         backgroundColor = .systemBackground
-        register(VideoTableViewCell.self, forCellReuseIdentifier: "VideoCell")
+        register(VideoTableViewCell.self, forCellReuseIdentifier: "VideoTableViewCell")
         dataSource = self
         delegate = self
+    }
+    
+    // ⭐️⭐️⭐️
+    func updateVideos(_ videos: [Item]) {
+        self.items = videos
+        reloadData()
     }
     
     // ☀️ private 프로퍼티를 다른곳에서 사용하는 방법...메서드를 만들자
@@ -51,7 +50,7 @@ final class VideoTableView: UITableView {
 //    }
     
     private func presentVideoViewController(with item: Item) {
-        let url = URL(string: "https://www.youtube.com/embed/" + item.id)!
+        let url = URL(string: "https://www.youtube.com/embed/" + item.id.videoId)!
         
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
         
@@ -135,17 +134,20 @@ extension VideoTableView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "VideoCell", for: indexPath) as? VideoTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "VideoTableViewCell", for: indexPath) as? VideoTableViewCell else {
             let cell = UITableViewCell()
             return cell
         }
         
         let item = items[indexPath.row]
-        if let channelItem = channelItems[item.snippet.channelId] {
-            cell.configure(item: item, channelItem: channelItem)
-        }
+        
+        // TODO: - 처음 불러오는 인기동영상의 경우 statics 를 가져올 수 있는데 구독 검색을 통해 받는 데이터는 현재 이 값이 없음. 그렇기 때문에 인기동영상처럼 API 호출을 한 더 하는 구조로 작업을 해서 viewCount 등 다른 값들을 받아와야함
+        cell.configure(item: item, channelItem: channelItems[item.snippet.channelId])
+        
         return cell
     }
+    
+    
 }
 
 // MARK: - UITableViewDelegate

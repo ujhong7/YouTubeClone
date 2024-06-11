@@ -109,142 +109,19 @@ final class VideoTableViewCell: UITableViewCell {
         kebabButton.addGestureRecognizer(kebabButtonTapGesture)
     }
     
-    // 🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
-//    func configure(item: Item) {
-//        titleLabel.text = item.snippet.title
-//        
-//        let viewCount = Int(item.statistics.viewCount)!
-//        let formattedViewCount = formatViewCount(viewCount)
-//        let channelName = item.snippet.channelTitle
-//        
-//        if let publishedDate = parseDate(dateString: item.snippet.publishedAt) {
-//            subtitleLabel.text = "\(channelName) ・ \(formattedViewCount) ・ \(timeAgoSinceDate(publishedDate, currentDate: Date(), numericDates: true))"
-//        }
-//        
-//        loadThumbnailImage(from: item.snippet.thumbnails.medium.url)
-//    }
-    
-    func configure(item: Item, channelItem: ChannelItem) {
+    func configure(item: Item, channelItem: ChannelItem?) {
         titleLabel.text = item.snippet.title
         
-        let viewCount = Int(item.statistics.viewCount)!
-        let formattedViewCount = formatViewCount(viewCount)
+        let viewCount = Int(item.statistics?.viewCount ?? "0")!
+        let formattedViewCount = viewCount.changeFormatToString()
         let channelName = item.snippet.channelTitle
         
-        if let publishedDate = parseDate(dateString: item.snippet.publishedAt) {
-            subtitleLabel.text = "\(channelName) ・ \(formattedViewCount) ・ \(timeAgoSinceDate(publishedDate, currentDate: Date(), numericDates: true))"
+        if let publishedDate = item.snippet.publishedAt.parseDate() {
+            subtitleLabel.text = "\(channelName) ・ \(formattedViewCount) ・ \(publishedDate.timeAgoSinceDate(numericDates: true)))"
         }
         
         loadThumbnailImage(from: item.snippet.thumbnails.medium.url)
-        loadChannelImage(from: channelItem.snippet.thumbnails.high.url)
-    }
-    
-    
-    func formatViewCount(_ count: Int) -> String {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        
-        // 백만회 이상일 때 소수점 없이 표시
-        if count >= 1000000 {
-            let formattedNumber = Double(count) / 10000 // 만 단위로 나누기
-            numberFormatter.minimumFractionDigits = 0 // 소수점 없음
-            numberFormatter.maximumFractionDigits = 0 // 소수점 없음
-            return "\(numberFormatter.string(from: NSNumber(value: formattedNumber))!)만회"
-        }
-        // 십만회 이상 백만회 미만일 때 소수점 첫째 자리까지 표시
-        else if count >= 100000 {
-            let formattedNumber = Double(count) / 10000 // 만 단위로 나누기
-            numberFormatter.minimumFractionDigits = 0 // 소수점 첫째 자리
-            numberFormatter.maximumFractionDigits = 0 // 소수점 첫째 자리
-            return "\(numberFormatter.string(from: NSNumber(value: formattedNumber))!)만회"
-        }
-        // 천회 이상 십만회 미만일 때 소수점 첫째 자리까지 표시
-        else if count >= 1000 {
-            let formattedNumber = Double(count) / 1000 // 천 단위로 나누기
-            numberFormatter.minimumFractionDigits = 1 // 소수점 첫째 자리
-            numberFormatter.maximumFractionDigits = 1 // 소수점 첫째 자리
-            return "\(numberFormatter.string(from: NSNumber(value: formattedNumber))!)천회"
-        }
-        // 백회 이상 천회 미만일 때는 정수로 표시
-        else if count >= 100 {
-            let formattedNumber = Double(count) / 100 // 백 단위로 나누기
-            numberFormatter.minimumFractionDigits = 0 // 소수점 없음
-            numberFormatter.maximumFractionDigits = 0 // 소수점 없음
-            return "\(numberFormatter.string(from: NSNumber(value: formattedNumber))!)백회"
-        }
-        // 백회 미만일 때는 정수로 표시
-        else {
-            return "\(numberFormatter.string(from: NSNumber(value: count))!)회"
-        }
-    }
-    
-    // 날짜 문자열 파싱
-    func parseDate(dateString: String) -> Date? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ" // 서버에서 받는 날짜 형식
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX") // 날짜 형식의 로캘 설정
-        return dateFormatter.date(from: dateString)
-    }
-    
-    // '몇 시간 전' 형식으로 변환
-    func timeAgoSinceDate(_ date: Date, currentDate: Date, numericDates: Bool) -> String {
-        let calendar = Calendar.current
-        let unitFlags: Set<Calendar.Component> = [.minute, .hour, .day, .weekOfYear, .month, .year, .second]
-        let components = calendar.dateComponents(unitFlags, from: date, to: currentDate)
-        
-        if let year = components.year, year >= 2 {
-            return "\(year)년 전"
-        } else if let year = components.year, year >= 1 {
-            if numericDates {
-                return "1년 전"
-            } else {
-                return "작년"
-            }
-        } else if let month = components.month, month >= 2 {
-            return "\(month)개월 전"
-        } else if let month = components.month, month >= 1 {
-            if numericDates {
-                return "1개월 전"
-            } else {
-                return "지난 달"
-            }
-        } else if let week = components.weekOfYear, week >= 2 {
-            return "\(week)주 전"
-        } else if let week = components.weekOfYear, week >= 1 {
-            if numericDates {
-                return "1주 전"
-            } else {
-                return "지난 주"
-            }
-        } else if let day = components.day, day >= 2 {
-            return "\(day)일 전"
-        } else if let day = components.day, day >= 1 {
-            if numericDates {
-                return "1일 전"
-            } else {
-                return "어제"
-            }
-        } else if let hour = components.hour, hour >= 2 {
-            return "\(hour)시간 전"
-        } else if let hour = components.hour, hour >= 1 {
-            if numericDates {
-                return "1시간 전"
-            } else {
-                return "한 시간 전"
-            }
-        } else if let minute = components.minute, minute >= 2 {
-            return "\(minute)분 전"
-        } else if let minute = components.minute, minute >= 1 {
-            if numericDates {
-                return "1분 전"
-            } else {
-                return "한 분 전"
-            }
-        } else if let second = components.second, second >= 3 {
-            return "\(second)초 전"
-        } else {
-            return "방금 전"
-        }
+        loadChannelImage(from: channelItem?.snippet.thumbnails.high.url ?? nil)
     }
     
     // MARK: - loadImage
@@ -284,7 +161,10 @@ final class VideoTableViewCell: UITableViewCell {
     }
     
     
-    private func loadChannelImage(from urlString: String) {
+    private func loadChannelImage(from urlString: String?) {
+        
+        guard let urlString else { return }
+        
         // 캐시에서 이미지를 먼저 확인
         if let cachedImage = VideoTableViewCell.imageCache.object(forKey: urlString as NSString) {
             self.profileImageButton.setImage(cachedImage, for: .normal)

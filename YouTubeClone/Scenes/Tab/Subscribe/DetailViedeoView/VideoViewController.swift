@@ -357,7 +357,7 @@ extension VideoViewController {
     // MARK: - presentingViewController vs presentedViewController
     private func presentVideoViewController(with item: Item) {
         print(#function)
-        let url = URL(string: "https://www.youtube.com/embed/" + item.id)!
+        let url = URL(string: "https://www.youtube.com/embed/" + item.id.videoId)!
         
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
         

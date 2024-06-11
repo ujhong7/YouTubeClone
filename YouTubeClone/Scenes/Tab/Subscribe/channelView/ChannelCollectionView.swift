@@ -36,7 +36,7 @@ final class ChannelCollectionView: UICollectionView {
     private func configureCollectionView() {
         backgroundColor = .systemBackground
         showsHorizontalScrollIndicator = false
-        register(ChannelCollectionViewCell.self, forCellWithReuseIdentifier: "ChannelCVC")
+        register(ChannelCollectionViewCell.self, forCellWithReuseIdentifier: "ChannelCollectionViewCell")
         dataSource = self
         delegate = self
     }
@@ -52,7 +52,7 @@ extension ChannelCollectionView: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChannelCVC", for: indexPath) as! ChannelCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChannelCollectionViewCell", for: indexPath) as! ChannelCollectionViewCell
         let channel = channel[indexPath.row]
         cell.configure(channel)
         return cell
@@ -79,7 +79,7 @@ extension ChannelCollectionView: UICollectionViewDelegate {
                 switch result {
                 case .success(let data):
                     self.onDataReceived?(data)
-                case .failure(let error):
+                case .failure(_):
                     print(#fileID, #function, #line, "🐧 결과값이 존재하지 않습니다.")
                 }
             }

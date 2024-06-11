@@ -42,6 +42,9 @@
 		1DE69EF92BB187590001CAB4 /* LoginSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE69EF82BB187590001CAB4 /* LoginSuccessViewController.swift */; };
 		1DE69EFB2BB19E5A0001CAB4 /* LoginInfoStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE69EFA2BB19E5A0001CAB4 /* LoginInfoStackView.swift */; };
 		BE788E1B2C171F62009D4185 /* UIImageView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE788E1A2C171F62009D4185 /* UIImageView+.swift */; };
+		BE788E1D2C1858B9009D4185 /* Date+.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE788E1C2C1858B9009D4185 /* Date+.swift */; };
+		BE788E1F2C1858C0009D4185 /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE788E1E2C1858C0009D4185 /* String+.swift */; };
+		BE788E212C1858E3009D4185 /* Int+.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE788E202C1858E3009D4185 /* Int+.swift */; };
 		CC333D67348D4E8579C94D1D /* Pods_YouTubeClone.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 345FFCCCCFBF5509CCE9B1E0 /* Pods_YouTubeClone.framework */; };
 /* End PBXBuildFile section */
 
@@ -99,6 +102,9 @@
 		345FFCCCCFBF5509CCE9B1E0 /* Pods_YouTubeClone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YouTubeClone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5262E7EA0486ABF41178948 /* Pods-YouTubeClone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YouTubeClone.release.xcconfig"; path = "Target Support Files/Pods-YouTubeClone/Pods-YouTubeClone.release.xcconfig"; sourceTree = "<group>"; };
 		BE788E1A2C171F62009D4185 /* UIImageView+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+.swift"; sourceTree = "<group>"; };
+		BE788E1C2C1858B9009D4185 /* Date+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+.swift"; sourceTree = "<group>"; };
+		BE788E1E2C1858C0009D4185 /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
+		BE788E202C1858E3009D4185 /* Int+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,8 +132,11 @@
 			isa = PBXGroup;
 			children = (
 				1D3CAADB2BBB13F000D20406 /* UILabel+.swift */,
+				BE788E1E2C1858C0009D4185 /* String+.swift */,
 				1D3CAAE02BBB1B8400D20406 /* UIColor+.swift */,
 				BE788E1A2C171F62009D4185 /* UIImageView+.swift */,
+				BE788E1C2C1858B9009D4185 /* Date+.swift */,
+				BE788E202C1858E3009D4185 /* Int+.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -451,6 +460,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE788E1D2C1858B9009D4185 /* Date+.swift in Sources */,
 				1DE69EF52BB186930001CAB4 /* LoginViewController.swift in Sources */,
 				1DE69EF92BB187590001CAB4 /* LoginSuccessViewController.swift in Sources */,
 				1DE69EE12BB185750001CAB4 /* AppDelegate.swift in Sources */,
@@ -462,8 +472,10 @@
 				1DB5088E2BCD49410096A747 /* MainTabController.swift in Sources */,
 				1DE69EFB2BB19E5A0001CAB4 /* LoginInfoStackView.swift in Sources */,
 				1DD0F7D52C0D958600C5AB80 /* VideoTableView.swift in Sources */,
+				BE788E212C1858E3009D4185 /* Int+.swift in Sources */,
 				1D3CAADC2BBB13F000D20406 /* UILabel+.swift in Sources */,
 				1DB508992BCD4A390096A747 /* StorageViewController.swift in Sources */,
+				BE788E1F2C1858C0009D4185 /* String+.swift in Sources */,
 				1DE69EE32BB185750001CAB4 /* SceneDelegate.swift in Sources */,
 				1D73D3A72BF547AE00A9B782 /* Video.swift in Sources */,
 				1DB508912BCD4A190096A747 /* HomeViewController.swift in Sources */,

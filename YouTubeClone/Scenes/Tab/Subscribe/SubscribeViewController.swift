@@ -88,6 +88,11 @@ final class SubscribeViewController: UIViewController {
         view.addSubview(videoTableView)
         
         videoTableView.parentViewController = self
+        channelCollectionView.onDataReceived = { [weak self] videos in
+            
+            // 네비게이션 타이틀 바꿔야함 + 테이블뷰도 새로운 방식으로 노출될 수 있도록 해야함
+            self?.videoTableView.updateVideos(videos)
+        }
     }
     
 //    private func setupRefreshControl() {
@@ -158,7 +163,7 @@ extension SubscribeViewController {
 extension SubscribeViewController {
     
     private func presentVideoViewController(with item: Item) {
-        let url = URL(string: "https://www.youtube.com/embed/" + item.id)!
+        let url = URL(string: "https://www.youtube.com/embed/" + item.id.videoId)!
         
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
         let videoViewController = VideoViewController()
