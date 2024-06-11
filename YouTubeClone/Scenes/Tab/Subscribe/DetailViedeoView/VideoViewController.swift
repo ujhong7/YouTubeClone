@@ -24,9 +24,17 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     
     var videoTitle: String?
     
-    var videoSubtitle: String?
+    var videoPublishedAt: String?
     
     var viewCount: String?
+    
+    var channelTitle: String?
+    
+    var channelImage: UIImage? // 채널 이미지 프로퍼티 추가
+    
+    var subscriberCount: String? // 구독자 수 프로퍼티 추가
+    
+    var commentCount: String?
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -38,7 +46,7 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     
     private lazy var subtitleLabel: UILabel = {
         let label = UILabel()
-        label.text = videoSubtitle
+        label.text = "조회수 \(viewCount!)  \(videoPublishedAt!)"
         label.textColor = .gray
         label.font = UIFont.boldSystemFont(ofSize: 12)
         return label
@@ -61,14 +69,14 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
         return button
     }()
     
-    private let channelNameLabel: UILabel = {
+    private lazy var channelTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "채널이름"
+        label.text = channelTitle
         label.font = UIFont.boldSystemFont(ofSize: 14)
         return label
     }()
     
-    private let subscriberCountLabel: UILabel = {
+    private lazy var subscriberCountLabel: UILabel = {
         let label = UILabel()
         label.text = "100만"
         label.textColor = .gray
@@ -98,15 +106,15 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
         return label
     }()
     
-    private let commentCountLabel: UILabel = {
+    private lazy var commentCountLabel: UILabel = {
         let label = UILabel()
         label.textColor = .gray
-        label.text = "100"
+        label.text = commentCount
         label.font = UIFont.systemFont(ofSize: 12)
         return label
     }()
     
-    private let commentLabel: UILabel = {
+    private lazy var commentLabel: UILabel = {
         let label = UILabel()
         label.text = "댓글입니다."
         label.font = UIFont.systemFont(ofSize: 12)
@@ -145,6 +153,7 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
         setupCollectionView()
         setupTapGesture()
         setupPanGesture()
+        setupScrollView()
     }
     
     deinit {
@@ -164,6 +173,10 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(VideoTableViewCell.self, forCellReuseIdentifier: "VideoCell")
+    }
+    
+    private func setupScrollView() {
+        scrollView.delegate = self
     }
     
     private func setupCollectionView() {
@@ -238,7 +251,7 @@ extension VideoViewController {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
         profileImageButton.translatesAutoresizingMaskIntoConstraints = false
-        channelNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        channelTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         subscriberCountLabel.translatesAutoresizingMaskIntoConstraints = false
         tabViewCollectionView.translatesAutoresizingMaskIntoConstraints = false
         commentView.translatesAutoresizingMaskIntoConstraints = false
@@ -255,7 +268,7 @@ extension VideoViewController {
         contentView.addSubview(titleLabel)
         contentView.addSubview(subtitleLabel)
         contentView.addSubview(profileImageButton)
-        contentView.addSubview(channelNameLabel)
+        contentView.addSubview(channelTitleLabel)
         contentView.addSubview(subscriberCountLabel)
         contentView.addSubview(tabViewCollectionView)
         contentView.addSubview(commentView)
@@ -299,11 +312,11 @@ extension VideoViewController {
             profileImageButton.heightAnchor.constraint(equalToConstant: 40),
             profileImageButton.widthAnchor.constraint(equalToConstant: 40),
             
-            channelNameLabel.centerYAnchor.constraint(equalTo: profileImageButton.centerYAnchor),
-            channelNameLabel.leadingAnchor.constraint(equalTo: profileImageButton.trailingAnchor, constant: 9),
+            channelTitleLabel.centerYAnchor.constraint(equalTo: profileImageButton.centerYAnchor),
+            channelTitleLabel.leadingAnchor.constraint(equalTo: profileImageButton.trailingAnchor, constant: 9),
             
-            subscriberCountLabel.centerYAnchor.constraint(equalTo: channelNameLabel.centerYAnchor),
-            subscriberCountLabel.leadingAnchor.constraint(equalTo: channelNameLabel.trailingAnchor, constant: 9),
+            subscriberCountLabel.centerYAnchor.constraint(equalTo: channelTitleLabel.centerYAnchor),
+            subscriberCountLabel.leadingAnchor.constraint(equalTo: channelTitleLabel.trailingAnchor, constant: 9),
             
             tabViewCollectionView.topAnchor.constraint(equalTo: profileImageButton.bottomAnchor, constant: 16),
             tabViewCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -406,7 +419,13 @@ extension VideoViewController {
         let videoViewController = VideoViewController()
         videoViewController.videoURL = url
         videoViewController.videoTitle = item.snippet.title
-        videoViewController.videoSubtitle = item.snippet.publishedAt
+        videoViewController.videoPublishedAt = item.snippet.publishedAt.toDate()?.timeAgoSinceDate()
+        videoViewController.viewCount = Int(item.statistics.viewCount)?.formattedViewCount()
+        videoViewController.channelTitle = item.snippet.channelTitle
+        videoViewController.commentCount = item.statistics.commentCount
+        
+        
+        // 채널이미지, 채널구독자 수
         
         videoViewController.modalPresentationStyle = .overFullScreen
         //        videoViewController.modalTransitionStyle = .crossDissolve
@@ -477,3 +496,4 @@ extension VideoViewController: UIScrollViewDelegate {
         }
     }
 }
+
