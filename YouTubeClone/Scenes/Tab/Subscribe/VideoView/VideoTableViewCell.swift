@@ -157,14 +157,12 @@ final class VideoTableViewCell: UITableViewCell {
         }
     }
     
-    
     private func loadChannelImage(from urlString: String) {
         // 캐시에서 이미지를 먼저 확인
         if let cachedImage = VideoTableViewCell.imageCache.object(forKey: urlString as NSString) {
             self.profileImageButton.setImage(cachedImage, for: .normal)
             return
         }
-        
         
         // URL 문자열을 URL 인스턴스로 변환
         guard let url = URL(string: urlString) else {

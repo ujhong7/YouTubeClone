@@ -21,6 +21,9 @@
 		1D8237092C032B5D00D83135 /* Video2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D8237082C032B5D00D83135 /* Video2.swift */; };
 		1DAEB70C2C14329500BB6843 /* CommentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DAEB70B2C14329500BB6843 /* CommentDetailView.swift */; };
 		1DAEB7102C16ED8D00BB6843 /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DAEB70F2C16ED8D00BB6843 /* CommentTableViewCell.swift */; };
+		1DAEB7162C182BBE00BB6843 /* Int+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DAEB7152C182BBE00BB6843 /* Int+.swift */; };
+		1DAEB7182C182D3F00BB6843 /* Date+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DAEB7172C182D3F00BB6843 /* Date+.swift */; };
+		1DAEB71A2C182EAD00BB6843 /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DAEB7192C182EAD00BB6843 /* String+.swift */; };
 		1DB5088E2BCD49410096A747 /* MainTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB5088D2BCD49410096A747 /* MainTabController.swift */; };
 		1DB508912BCD4A190096A747 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB508902BCD4A190096A747 /* HomeViewController.swift */; };
 		1DB508932BCD4A200096A747 /* ShortsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB508922BCD4A200096A747 /* ShortsViewController.swift */; };
@@ -73,6 +76,9 @@
 		1D8237082C032B5D00D83135 /* Video2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video2.swift; sourceTree = "<group>"; };
 		1DAEB70B2C14329500BB6843 /* CommentDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentDetailView.swift; sourceTree = "<group>"; };
 		1DAEB70F2C16ED8D00BB6843 /* CommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
+		1DAEB7152C182BBE00BB6843 /* Int+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+.swift"; sourceTree = "<group>"; };
+		1DAEB7172C182D3F00BB6843 /* Date+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+.swift"; sourceTree = "<group>"; };
+		1DAEB7192C182EAD00BB6843 /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
 		1DB5088D2BCD49410096A747 /* MainTabController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabController.swift; sourceTree = "<group>"; };
 		1DB508902BCD4A190096A747 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		1DB508922BCD4A200096A747 /* ShortsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortsViewController.swift; sourceTree = "<group>"; };
@@ -127,6 +133,9 @@
 			children = (
 				1D3CAADB2BBB13F000D20406 /* UILabel+.swift */,
 				1D3CAAE02BBB1B8400D20406 /* UIColor+.swift */,
+				1DAEB7152C182BBE00BB6843 /* Int+.swift */,
+				1DAEB7172C182D3F00BB6843 /* Date+.swift */,
+				1DAEB7192C182EAD00BB6843 /* String+.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -463,6 +472,7 @@
 				1DE69EFB2BB19E5A0001CAB4 /* LoginInfoStackView.swift in Sources */,
 				1DD0F7D52C0D958600C5AB80 /* VideoTableView.swift in Sources */,
 				1DAEB7102C16ED8D00BB6843 /* CommentTableViewCell.swift in Sources */,
+				1DAEB71A2C182EAD00BB6843 /* String+.swift in Sources */,
 				1D3CAADC2BBB13F000D20406 /* UILabel+.swift in Sources */,
 				1DB508992BCD4A390096A747 /* StorageViewController.swift in Sources */,
 				1DE69EE32BB185750001CAB4 /* SceneDelegate.swift in Sources */,
@@ -477,8 +487,10 @@
 				1DD0F7CD2C0A527A00C5AB80 /* ChannelDTO.swift in Sources */,
 				1D8237092C032B5D00D83135 /* Video2.swift in Sources */,
 				1DAEB70C2C14329500BB6843 /* CommentDetailView.swift in Sources */,
+				1DAEB7162C182BBE00BB6843 /* Int+.swift in Sources */,
 				1DE69EF72BB186F20001CAB4 /* SignUpViewController.swift in Sources */,
 				1D3CAADE2BBB166300D20406 /* LoginTextField.swift in Sources */,
+				1DAEB7182C182D3F00BB6843 /* Date+.swift in Sources */,
 				1D73D3A02BF4653500A9B782 /* ChannelCollectionView.swift in Sources */,
 				1DD0F7C42C081EEE00C5AB80 /* TabButtonCollectionViewFlowLayout.swift in Sources */,
 				1DB508952BCD4A2A0096A747 /* AddViewController.swift in Sources */,
