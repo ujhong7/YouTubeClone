@@ -58,11 +58,15 @@ final class VideoTableView: UITableView {
         let videoViewController = VideoViewController()
         videoViewController.videoURL = url
         videoViewController.videoTitle = item.snippet.title
-        videoViewController.videoSubtitle = item.snippet.publishedAt
-        videoViewController.viewCount = item.statistics.viewCount
+        videoViewController.videoPublishedAt = item.snippet.publishedAt.toDate()?.timeAgoSinceDate()
+        videoViewController.viewCount = Int(item.statistics.viewCount)?.formattedViewCount()
+        videoViewController.channelTitle = item.snippet.channelTitle
+        videoViewController.commentCount = item.statistics.commentCount
         
         
-        // videoViewController.videoDescription = video.description
+        // 채널이미지, 채널구독자 수
+        
+        
         
         videoViewController.modalPresentationStyle = .overFullScreen
         videoViewController.modalTransitionStyle = .coverVertical
