@@ -26,6 +26,8 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     
     var videoSubtitle: String?
     
+    var viewCount: String?
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 2

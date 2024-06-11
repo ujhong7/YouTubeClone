@@ -59,6 +59,9 @@ final class VideoTableView: UITableView {
         videoViewController.videoURL = url
         videoViewController.videoTitle = item.snippet.title
         videoViewController.videoSubtitle = item.snippet.publishedAt
+        videoViewController.viewCount = item.statistics.viewCount
+        
+        
         // videoViewController.videoDescription = video.description
         
         videoViewController.modalPresentationStyle = .overFullScreen
