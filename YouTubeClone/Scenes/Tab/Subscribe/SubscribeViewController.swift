@@ -171,7 +171,7 @@ extension SubscribeViewController {
         
         videoViewController.videoURL = url
         videoViewController.videoTitle = item.snippet.title
-        videoViewController.videoSubtitle = item.snippet.publishedAt
+        videoViewController.videoPublishedAt = item.snippet.publishedAt
         // videoViewController.videoDescription = video.description
         
         videoViewController.modalPresentationStyle = .overFullScreen
