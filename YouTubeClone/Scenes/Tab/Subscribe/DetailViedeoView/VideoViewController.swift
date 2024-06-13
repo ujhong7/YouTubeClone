@@ -13,12 +13,14 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     
     // MARK: - Properties
     
-    //    var videos: [Video] = []
+    var videos: [Video] = []
     
     /// API 호출 후 데이터를 받기위한 배열
     var items: [Item] = []
     
     private var channelItems: [String: ChannelItem] = [:]
+    
+    var videoID: String?
     
     var videoURL: URL?
     
@@ -51,16 +53,10 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
         label.font = UIFont.boldSystemFont(ofSize: 12)
         return label
     }()
-    
-    private let profileView: UIView = {
-        let view = UIView()
-        
-        return view
-    }()
-    
+   
     private let profileImageButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.backgroundColor = .systemGray5
+        button.backgroundColor = .systemGray6
         button.contentMode = .scaleAspectFill
         button.widthAnchor.constraint(equalToConstant: 36).isActive = true
         button.heightAnchor.constraint(equalToConstant: 36).isActive = true
@@ -92,12 +88,12 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     
     private let commentView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemGray5
+        view.backgroundColor = .systemGray6
         view.layer.cornerRadius = 10
         return view
     }()
     
-    private let commentDetailView = CommentDetailView()
+    private lazy var commentDetailView: CommentDetailView? = nil
     
     private let commentTitleLabel: UILabel = {
         let label = UILabel()
@@ -109,7 +105,8 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     private lazy var commentCountLabel: UILabel = {
         let label = UILabel()
         label.textColor = .gray
-        label.text = commentCount
+        // label.text = commentCount
+        label.text = "\(commentCount!) 개"
         label.font = UIFont.systemFont(ofSize: 12)
         return label
     }()
@@ -146,7 +143,8 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        requestYouTubeAPI()
+        // requestYouTubeAPI()
+        requestRelatedVideos(videoID: videoID!)
         setupVideoPlayer()
         setupAutoLayout()
         setupTableView()
@@ -184,6 +182,7 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     }
     
     func setupTapGesture() {
+        print(#function)
         // 탭 제스처 인식기 추가
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleCommentViewTap))
         commentView.addGestureRecognizer(tapGesture)
@@ -194,22 +193,38 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
         webView.addGestureRecognizer(panGestureRecognizer)
         panGestureRecognizer.delegate = self // 이 줄 추가
     }
+}
+
+// MARK: - @ojbc
+
+extension VideoViewController {
     
     @objc private func handleCommentViewTap() {
-        view.addSubview(commentDetailView)
-        commentDetailView.translatesAutoresizingMaskIntoConstraints = false
+        print(#function)
+        // videoID가 존재하는지 확인하고 안전하게 언래핑
+        guard let videoID = videoID else {
+            print("Video ID가 없습니다.")
+            return
+        }
         
-        NSLayoutConstraint.activate([
-            commentDetailView.topAnchor.constraint(equalTo: webView.bottomAnchor),
-            commentDetailView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            commentDetailView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            commentDetailView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
+        commentDetailView = CommentDetailView()
         
-        // 애니메이션
-        commentDetailView.transform = CGAffineTransform(translationX: 0, y: 300)
-        UIView.animate(withDuration: 0.3) {
-            self.commentDetailView.transform = .identity
+        if let commentDetailView = commentDetailView {
+            commentDetailView.fetchComments(videoID: videoID)
+            view.addSubview(commentDetailView)
+            commentDetailView.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([
+                commentDetailView.topAnchor.constraint(equalTo: webView.bottomAnchor),
+                commentDetailView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                commentDetailView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                commentDetailView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ])
+            
+            commentDetailView.transform = CGAffineTransform(translationX: 0, y: 300)
+            UIView.animate(withDuration: 0.3) {
+                commentDetailView.transform = .identity
+            }
         }
     }
     
@@ -238,6 +253,7 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     @objc func dismissViewController() {
         dismiss(animated: true, completion: nil)
     }
+    
 }
 
 // MARK: - Autolayout
@@ -360,35 +376,58 @@ extension VideoViewController {
 extension VideoViewController {
     
     // MARK: - Networking
-    private func requestYouTubeAPI() {
-        print(#function)
-        APIManager.shared.requestYouTubeAPIData { [weak self] result in
-            switch result {
-            case .success(let data):
-                dump(data)
-                DispatchQueue.main.async {
-                    self?.items = data
-                    
-                    // ☀️ 이런식으로 필터 (필터할때 가장 좋은 방법은 고유 ID로 비교)
-                    // self?.items = data.filter { $0.id != self?.videoTitle}
-                    
-                    self?.tableView.reloadData()
-                    //self?.refreshControl.endRefreshing() // refresh종료를 위해..
-                }
-                
-                // channelId를 추출하고 requestChannelProfileImageAPI 호출
-                data.forEach { item in
-                    // 'Item' 모델에 'channelId'가 있다고 가정
-                    self?.requestChannelProfileImageAPI(with: item.snippet.channelId)
-                    
-                }
-                
-            case .failure(let error):
-                print("데이터를 받아오는데 실패했습니다: \(error)")
-                // self?.refreshControl.endRefreshing()
-            }
-        }
-    }
+//    private func requestYouTubeAPI() {
+//        print(#function)
+//        APIManager.shared.requestYouTubeAPIData { [weak self] result in
+//            switch result {
+//            case .success(let data):
+//                dump(data)
+//                DispatchQueue.main.async {
+//                    self?.items = data
+//                    
+//                    // ☀️ 이런식으로 필터 (필터할때 가장 좋은 방법은 고유 ID로 비교)
+//                    // self?.items = data.filter { $0.id != self?.videoTitle}
+//                    
+//                    self?.tableView.reloadData()
+//                    //self?.refreshControl.endRefreshing() // refresh종료를 위해..
+//                }
+//                
+//                // channelId를 추출하고 requestChannelProfileImageAPI 호출
+//                data.forEach { item in
+//                    // 'Item' 모델에 'channelId'가 있다고 가정
+//                    self?.requestChannelProfileImageAPI(with: item.snippet.channelId)
+//                    
+//                }
+//                
+//            case .failure(let error):
+//                print("데이터를 받아오는데 실패했습니다: \(error)")
+//                // self?.refreshControl.endRefreshing()
+//            }
+//        }
+//    }
+    
+    private func requestRelatedVideos(videoID: String) {
+           print(#function)
+           APIManager.shared.requestRelatedVideos(videoId: videoID) { [weak self] result in
+               switch result {
+               case .success(let data):
+                   dump(data)
+                   DispatchQueue.main.async {
+                       self?.items = data
+                       self?.tableView.reloadData()
+                   }
+                   
+                   // channelId를 추출하고 requestChannelProfileImageAPI 호출
+                   data.forEach { item in
+                       // 'Item' 모델에 'channelId'가 있다고 가정
+                       self?.requestChannelProfileImageAPI(with: item.snippet.channelId)
+                   }
+                   
+               case .failure(let error):
+                   print("데이터를 받아오는데 실패했습니다: \(error)")
+               }
+           }
+       }
     
     private func requestChannelProfileImageAPI(with channelId: String) {
         print(#function)
@@ -417,6 +456,7 @@ extension VideoViewController {
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
         
         let videoViewController = VideoViewController()
+        videoViewController.videoID = item.id
         videoViewController.videoURL = url
         videoViewController.videoTitle = item.snippet.title
         videoViewController.videoPublishedAt = item.snippet.publishedAt.toDate()?.timeAgoSinceDate()

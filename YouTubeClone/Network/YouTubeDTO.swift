@@ -16,6 +16,7 @@ struct YouTubeDTO: Codable {
 
 // MARK: - Item
 struct Item: Codable {
+    /// videoID
     let id: String // 동영상 ID를 위한 필드 추가
     let snippet: Snippet
     let statistics: Statistics

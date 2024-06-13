@@ -56,6 +56,7 @@ final class VideoTableView: UITableView {
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
         
         let videoViewController = VideoViewController()
+        videoViewController.videoID = item.id
         videoViewController.videoURL = url
         videoViewController.videoTitle = item.snippet.title
         videoViewController.videoPublishedAt = item.snippet.publishedAt.toDate()?.timeAgoSinceDate()

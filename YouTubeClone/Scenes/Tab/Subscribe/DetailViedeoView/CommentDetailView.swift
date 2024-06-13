@@ -9,6 +9,10 @@ import UIKit
 
 class CommentDetailView: UIView {
     
+    // MARK: - Properties
+    
+    private var comments: [CommentThread] = []
+    
     private let label: UILabel = {
         let label = UILabel()
         label.text = "댓글"
@@ -24,7 +28,6 @@ class CommentDetailView: UIView {
         button.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
         return button
     }()
-
     
     private var commentTableView: UITableView = {
         let tableView =  UITableView(frame: .zero)
@@ -38,8 +41,17 @@ class CommentDetailView: UIView {
         return view
     }()
     
+    private let activityIndicator: UIActivityIndicatorView = {
+           let indicator = UIActivityIndicatorView(style: .large)
+           indicator.hidesWhenStopped = true
+           return indicator
+       }()
+    
+    // MARK: - LifeCycle
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
+        print("CommentDetailView initialized")
         setupView()
         setupTableView()
         setupAutoLayout()
@@ -131,11 +143,35 @@ class CommentDetailView: UIView {
     
 }
 
+// MARK: - Networking
+
+extension CommentDetailView {
+    
+    func fetchComments(videoID: String) {
+        print(#function)
+        
+        print("Fetching comments for videoID: \(videoID)")
+        activityIndicator.startAnimating()
+        APIManager.shared.requestComments(videoId: videoID) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.activityIndicator.stopAnimating()
+                switch result {
+                case .success(let comments):
+                    self?.comments = comments
+                    self?.commentTableView.reloadData()
+                case .failure(let error):
+                    print("Failed to fetch comments: \(error)")
+                }
+            }
+        }
+    }
+    
+}
 // MARK: - UITableViewDataSource
 
 extension CommentDetailView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20
+        return comments.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -143,7 +179,8 @@ extension CommentDetailView: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        // ...
+        let comment = comments[indexPath.row]
+        cell.configure(comments: comment)
         
         return cell
     }

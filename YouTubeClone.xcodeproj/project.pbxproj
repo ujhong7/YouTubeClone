@@ -24,6 +24,7 @@
 		1DAEB7162C182BBE00BB6843 /* Int+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DAEB7152C182BBE00BB6843 /* Int+.swift */; };
 		1DAEB7182C182D3F00BB6843 /* Date+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DAEB7172C182D3F00BB6843 /* Date+.swift */; };
 		1DAEB71A2C182EAD00BB6843 /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DAEB7192C182EAD00BB6843 /* String+.swift */; };
+		1DAEB71C2C19EF1400BB6843 /* CommentDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DAEB71B2C19EF1400BB6843 /* CommentDTO.swift */; };
 		1DB5088E2BCD49410096A747 /* MainTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB5088D2BCD49410096A747 /* MainTabController.swift */; };
 		1DB508912BCD4A190096A747 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB508902BCD4A190096A747 /* HomeViewController.swift */; };
 		1DB508932BCD4A200096A747 /* ShortsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB508922BCD4A200096A747 /* ShortsViewController.swift */; };
@@ -79,6 +80,7 @@
 		1DAEB7152C182BBE00BB6843 /* Int+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+.swift"; sourceTree = "<group>"; };
 		1DAEB7172C182D3F00BB6843 /* Date+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+.swift"; sourceTree = "<group>"; };
 		1DAEB7192C182EAD00BB6843 /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
+		1DAEB71B2C19EF1400BB6843 /* CommentDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentDTO.swift; sourceTree = "<group>"; };
 		1DB5088D2BCD49410096A747 /* MainTabController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabController.swift; sourceTree = "<group>"; };
 		1DB508902BCD4A190096A747 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		1DB508922BCD4A200096A747 /* ShortsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortsViewController.swift; sourceTree = "<group>"; };
@@ -263,6 +265,7 @@
 				1DD0F7C62C095FD000C5AB80 /* APIManager.swift */,
 				1DD0F7C82C09601900C5AB80 /* YouTubeDTO.swift */,
 				1DD0F7CC2C0A527A00C5AB80 /* ChannelDTO.swift */,
+				1DAEB71B2C19EF1400BB6843 /* CommentDTO.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -463,6 +466,7 @@
 				1DE69EF52BB186930001CAB4 /* LoginViewController.swift in Sources */,
 				1DE69EF92BB187590001CAB4 /* LoginSuccessViewController.swift in Sources */,
 				1DE69EE12BB185750001CAB4 /* AppDelegate.swift in Sources */,
+				1DAEB71C2C19EF1400BB6843 /* CommentDTO.swift in Sources */,
 				1D73D39E2BF464F700A9B782 /* TabButtonCollectionViewCell.swift in Sources */,
 				1DB508972BCD4A310096A747 /* SubscribeViewController.swift in Sources */,
 				1DD0F7C22C081E2900C5AB80 /* ChannelCollectionViewFlowLayout.swift in Sources */,

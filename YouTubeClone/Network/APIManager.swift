@@ -68,6 +68,51 @@ class APIManager {
                   }
               }
       }
+    
+    // MARK: - 댓글 가져오기
+      func requestComments(videoId: String, completion: @escaping (Result<[CommentThread], AFError>) -> Void) {
+          let commentsURL = API.baseUrl + "commentThreads"
+          let parameters: [String: Any] = [
+              "part": "snippet,replies",
+              "videoId": videoId,
+              "maxResults": "5",
+              "key": API.key
+          ]
+          
+          AF.request(commentsURL, parameters: parameters)
+              .validate()
+              .responseDecodable(of: CommentThreadResponse.self) { response in
+                  switch response.result {
+                  case .success(let commentThreadResponse):
+                      completion(.success(commentThreadResponse.items))
+                  case .failure(let error):
+                      completion(.failure(error))
+                  }
+              }
+      }
+    
+    // MARK: - 관련된 영상 가져오기
+    func requestRelatedVideos(videoId: String, completion: @escaping (Result<[Item], AFError>) -> Void) {
+        let relatedVideosURL = API.baseUrl + "search"
+        let parameters: [String: Any] = [
+            "part": "snippet",
+            "relatedToVideoId": videoId,
+            "type": "video",
+            "key": API.key
+        ]
+        
+        AF.request(relatedVideosURL, parameters: parameters)
+            .validate()
+            .responseDecodable(of: YouTubeDTO.self) { response in
+                switch response.result {
+                case .success(let youTubeDTO):
+                    completion(.success(youTubeDTO.items))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+    }
+
 
 }
 
