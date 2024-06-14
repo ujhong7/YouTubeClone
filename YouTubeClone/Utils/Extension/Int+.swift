@@ -8,6 +8,7 @@
 import Foundation
 
 extension Int {
+    
     func formattedViewCount() -> String {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
@@ -36,5 +37,34 @@ extension Int {
             return "\(numberFormatter.string(from: NSNumber(value: self))!)회"
         }
     }
+    
+    func formattedSubscriberCount() -> String {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        
+        if self >= 1000000 {
+            let formattedNumber = Double(self) / 10000 // 만 단위로 나누기
+            numberFormatter.minimumFractionDigits = 0 // 소수점 없음
+            numberFormatter.maximumFractionDigits = 1 // 최대 소수점 한 자리
+            return "\(numberFormatter.string(from: NSNumber(value: formattedNumber))!)만명"
+        } else if self >= 100000 {
+            let formattedNumber = Double(self) / 10000 // 만 단위로 나누기
+            numberFormatter.minimumFractionDigits = 1 // 최소 소수점 한 자리
+            numberFormatter.maximumFractionDigits = 1 // 최대 소수점 한 자리
+            return "\(numberFormatter.string(from: NSNumber(value: formattedNumber))!)만명"
+        } else if self >= 1000 {
+            let formattedNumber = Double(self) / 1000 // 천 단위로 나누기
+            numberFormatter.minimumFractionDigits = 2 // 최소 소수점 두 자리
+            numberFormatter.maximumFractionDigits = 2 // 최대 소수점 두 자리
+            return "\(numberFormatter.string(from: NSNumber(value: formattedNumber))!)천명"
+        } else if self >= 100 {
+            let formattedNumber = Double(self) / 100 // 백 단위로 나누기
+            numberFormatter.minimumFractionDigits = 0 // 소수점 없음
+            numberFormatter.maximumFractionDigits = 0 // 소수점 없음
+            return "\(numberFormatter.string(from: NSNumber(value: formattedNumber))!)명"
+        } else {
+            return "\(self)명"
+        }
+    }
+    
 }
-

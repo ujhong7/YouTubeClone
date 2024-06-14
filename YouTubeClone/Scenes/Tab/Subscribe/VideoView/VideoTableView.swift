@@ -16,12 +16,11 @@ final class VideoTableView: UITableView {
     /// 유튜브 API 데이터
     private var items: [Item] = []
     
-    //    var channelItems: [ChannelItem] = []
     private var channelItems: [String: ChannelItem] = [:]
     
-//    var items: [Item] = []
-//    
-//    private var channelItems: [String: ChannelItem] = [:]
+    //    var items: [Item] = []
+    //
+    //    private var channelItems: [String: ChannelItem] = [:]
     
     
     // MARK: - Init
@@ -46,9 +45,9 @@ final class VideoTableView: UITableView {
     }
     
     // ☀️ private 프로퍼티를 다른곳에서 사용하는 방법...메서드를 만들자
-//    func getVideoItems() -> [Item] {
-//        return items
-//    }
+    //    func getVideoItems() -> [Item] {
+    //        return items
+    //    }
     
     private func presentVideoViewController(with item: Item) {
         let url = URL(string: "https://www.youtube.com/embed/" + item.id)!
@@ -64,15 +63,14 @@ final class VideoTableView: UITableView {
         videoViewController.channelTitle = item.snippet.channelTitle
         videoViewController.commentCount = item.statistics.commentCount
         
-        
         // 채널이미지, 채널구독자 수
-        
-        
+        if let channelItem = channelItems[item.snippet.channelId] {
+            videoViewController.channelImageURL = channelItem.snippet.thumbnails.high.url
+            videoViewController.subscriberCount = channelItem.statistics.subscriberCount
+        }
         
         videoViewController.modalPresentationStyle = .overFullScreen
         videoViewController.modalTransitionStyle = .coverVertical
-        // UIView에서는 present 불가능함..
-        //present(videoViewController, animated: true, completion: nil)
         
         // ⭐️
         if let parentVC = parentViewController as? SubscribeViewController {
@@ -115,7 +113,7 @@ extension VideoTableView {
     
     private func requestChannelProfileImageAPI(with channelId: String) {
         print(#function)
-        APIManager.shared.requestChannelProfileImage(channelId: channelId) { [weak self] result in
+        APIManager.shared.requestChannelAPIData(channelId: channelId) { [weak self] result in
             switch result {
             case .success(let data):
                 dump(data)
@@ -134,7 +132,7 @@ extension VideoTableView {
 }
 
 // MARK: - UITableViewDataSource
- 
+
 extension VideoTableView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

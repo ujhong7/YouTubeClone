@@ -147,12 +147,12 @@ class CommentDetailView: UIView {
 
 extension CommentDetailView {
     
-    func fetchComments(videoID: String) {
+    func requestCommentsAPI(videoID: String) {
         print(#function)
         
         print("Fetching comments for videoID: \(videoID)")
         activityIndicator.startAnimating()
-        APIManager.shared.requestComments(videoId: videoID) { [weak self] result in
+        APIManager.shared.requestCommentsAPIData(videoId: videoID) { [weak self] result in
             DispatchQueue.main.async {
                 self?.activityIndicator.stopAnimating()
                 switch result {
@@ -195,12 +195,12 @@ extension CommentDetailView: UITableViewDelegate {
 }
 
 
-// MARK: - UIScrollViewDelegate
-
-extension CommentDetailView: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y < 0 {
-            scrollView.contentOffset.y = 0
-        }
-    }
-}
+//// MARK: - UIScrollViewDelegate
+//
+//extension CommentDetailView: UIScrollViewDelegate {
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        if scrollView.contentOffset.y < 0 {
+//            scrollView.contentOffset.y = 0
+//        }
+//    }
+//}

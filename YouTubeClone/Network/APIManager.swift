@@ -49,10 +49,10 @@ class APIManager {
     }
     
     // MARK: - 채널 프로필 이미지 가져오기
-      func requestChannelProfileImage(channelId: String, completion: @escaping (Result<[ChannelItem], AFError>) -> Void) {
+      func requestChannelAPIData(channelId: String, completion: @escaping (Result<[ChannelItem], AFError>) -> Void) {
           let channelURL = API.baseUrl + "channels"
           let parameters: [String: Any] = [
-              "part": "snippet",
+              "part": "snippet, statistics",
               "id": channelId,
               "key": API.key
           ]
@@ -70,7 +70,7 @@ class APIManager {
       }
     
     // MARK: - 댓글 가져오기
-      func requestComments(videoId: String, completion: @escaping (Result<[CommentThread], AFError>) -> Void) {
+      func requestCommentsAPIData(videoId: String, completion: @escaping (Result<[CommentThread], AFError>) -> Void) {
           let commentsURL = API.baseUrl + "commentThreads"
           let parameters: [String: Any] = [
               "part": "snippet,replies",
@@ -90,29 +90,6 @@ class APIManager {
                   }
               }
       }
-    
-    // MARK: - 관련된 영상 가져오기
-    func requestRelatedVideos(videoId: String, completion: @escaping (Result<[Item], AFError>) -> Void) {
-        let relatedVideosURL = API.baseUrl + "search"
-        let parameters: [String: Any] = [
-            "part": "snippet",
-            "relatedToVideoId": videoId,
-            "type": "video",
-            "key": API.key
-        ]
-        
-        AF.request(relatedVideosURL, parameters: parameters)
-            .validate()
-            .responseDecodable(of: YouTubeDTO.self) { response in
-                switch response.result {
-                case .success(let youTubeDTO):
-                    completion(.success(youTubeDTO.items))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
-    }
-
 
 }
 

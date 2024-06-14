@@ -32,11 +32,15 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     
     var channelTitle: String?
     
-    var channelImage: UIImage? // 채널 이미지 프로퍼티 추가
-    
-    var subscriberCount: String? // 구독자 수 프로퍼티 추가
+    //    var channelImage: UIImage? // 채널 이미지 프로퍼티 추가
+    //
+    //    var subscriberCount: String? // 구독자 수 프로퍼티 추가
     
     var commentCount: String?
+    
+    var channelImageURL: String?
+    
+    var subscriberCount: String?
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -53,7 +57,7 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
         label.font = UIFont.boldSystemFont(ofSize: 12)
         return label
     }()
-   
+    
     private let profileImageButton: UIButton = {
         let button = UIButton(type: .custom)
         button.backgroundColor = .systemGray6
@@ -74,7 +78,7 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     
     private lazy var subscriberCountLabel: UILabel = {
         let label = UILabel()
-        label.text = "100만"
+        label.text = Int(subscriberCount!)?.formattedSubscriberCount()
         label.textColor = .gray
         label.font = UIFont.systemFont(ofSize: 12)
         return label
@@ -123,6 +127,10 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
         return tableView
     }()
     
+//    private var tableView: VideoTableView = {
+//
+//    }
+    
     private var webView: WKWebView = {
         let webConfiguration = WKWebViewConfiguration()   // WKWebView 설정을 위한 WKWebViewConfiguration 생성
         webConfiguration.allowsInlineMediaPlayback = true // 인라인 재생 활성화 (전체화면x)⭐️
@@ -143,8 +151,8 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        // requestYouTubeAPI()
-        requestRelatedVideos(videoID: videoID!)
+        requestYouTubeAPI()
+        loadChannelImage()
         setupVideoPlayer()
         setupAutoLayout()
         setupTableView()
@@ -159,6 +167,27 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     }
     
     // MARK: - Methods
+    
+    private func loadChannelImage() {
+        guard let channelImageURLString = channelImageURL, let url = URL(string: channelImageURLString) else {
+            return
+        }
+        setImage(for: profileImageButton, from: url)
+    }
+    
+    private func setImage(for button: UIButton, from url: URL) {
+        DispatchQueue.global().async {
+            if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    button.setImage(image, for: .normal)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    // Handle error case here if needed
+                }
+            }
+        }
+    }
     
     func setupVideoPlayer() {
         guard let videoURL = videoURL else { return }
@@ -210,7 +239,7 @@ extension VideoViewController {
         commentDetailView = CommentDetailView()
         
         if let commentDetailView = commentDetailView {
-            commentDetailView.fetchComments(videoID: videoID)
+            commentDetailView.requestCommentsAPI(videoID: videoID)
             view.addSubview(commentDetailView)
             commentDetailView.translatesAutoresizingMaskIntoConstraints = false
             
@@ -376,62 +405,39 @@ extension VideoViewController {
 extension VideoViewController {
     
     // MARK: - Networking
-//    private func requestYouTubeAPI() {
-//        print(#function)
-//        APIManager.shared.requestYouTubeAPIData { [weak self] result in
-//            switch result {
-//            case .success(let data):
-//                dump(data)
-//                DispatchQueue.main.async {
-//                    self?.items = data
-//                    
-//                    // ☀️ 이런식으로 필터 (필터할때 가장 좋은 방법은 고유 ID로 비교)
-//                    // self?.items = data.filter { $0.id != self?.videoTitle}
-//                    
-//                    self?.tableView.reloadData()
-//                    //self?.refreshControl.endRefreshing() // refresh종료를 위해..
-//                }
-//                
-//                // channelId를 추출하고 requestChannelProfileImageAPI 호출
-//                data.forEach { item in
-//                    // 'Item' 모델에 'channelId'가 있다고 가정
-//                    self?.requestChannelProfileImageAPI(with: item.snippet.channelId)
-//                    
-//                }
-//                
-//            case .failure(let error):
-//                print("데이터를 받아오는데 실패했습니다: \(error)")
-//                // self?.refreshControl.endRefreshing()
-//            }
-//        }
-//    }
-    
-    private func requestRelatedVideos(videoID: String) {
-           print(#function)
-           APIManager.shared.requestRelatedVideos(videoId: videoID) { [weak self] result in
-               switch result {
-               case .success(let data):
-                   dump(data)
-                   DispatchQueue.main.async {
-                       self?.items = data
-                       self?.tableView.reloadData()
-                   }
-                   
-                   // channelId를 추출하고 requestChannelProfileImageAPI 호출
-                   data.forEach { item in
-                       // 'Item' 모델에 'channelId'가 있다고 가정
-                       self?.requestChannelProfileImageAPI(with: item.snippet.channelId)
-                   }
-                   
-               case .failure(let error):
-                   print("데이터를 받아오는데 실패했습니다: \(error)")
-               }
-           }
-       }
+    private func requestYouTubeAPI() {
+        print(#function)
+        APIManager.shared.requestYouTubeAPIData { [weak self] result in
+            switch result {
+            case .success(let data):
+                dump(data)
+                DispatchQueue.main.async {
+                    self?.items = data
+                    
+                    // ☀️ 이런식으로 필터 (필터할때 가장 좋은 방법은 고유 ID로 비교)
+                    // self?.items = data.filter { $0.id != self?.videoTitle}
+                    
+                    self?.tableView.reloadData()
+                    //self?.refreshControl.endRefreshing() // refresh종료를 위해..
+                }
+                
+                // channelId를 추출하고 requestChannelProfileImageAPI 호출
+                data.forEach { item in
+                    // 'Item' 모델에 'channelId'가 있다고 가정
+                    self?.requestChannelProfileImageAPI(with: item.snippet.channelId)
+                    
+                }
+                
+            case .failure(let error):
+                print("데이터를 받아오는데 실패했습니다: \(error)")
+                // self?.refreshControl.endRefreshing()
+            }
+        }
+    }
     
     private func requestChannelProfileImageAPI(with channelId: String) {
         print(#function)
-        APIManager.shared.requestChannelProfileImage(channelId: channelId) { [weak self] result in
+        APIManager.shared.requestChannelAPIData(channelId: channelId) { [weak self] result in
             switch result {
             case .success(let data):
                 dump(data)
@@ -447,8 +453,8 @@ extension VideoViewController {
         }
     }
     
-    
-    // MARK: - presentingViewController vs presentedViewController
+    // MARK: - 화면전환
+    // presentingViewController vs presentedViewController
     private func presentVideoViewController(with item: Item) {
         print(#function)
         let url = URL(string: "https://www.youtube.com/embed/" + item.id)!
@@ -464,8 +470,11 @@ extension VideoViewController {
         videoViewController.channelTitle = item.snippet.channelTitle
         videoViewController.commentCount = item.statistics.commentCount
         
-        
         // 채널이미지, 채널구독자 수
+        if let channelItem = channelItems[item.snippet.channelId] {
+            videoViewController.channelImageURL = channelItem.snippet.thumbnails.high.url
+            videoViewController.subscriberCount = channelItem.statistics.subscriberCount
+        }
         
         videoViewController.modalPresentationStyle = .overFullScreen
         //        videoViewController.modalTransitionStyle = .crossDissolve
@@ -478,6 +487,7 @@ extension VideoViewController {
             print(#function)
             presentingViewControleller?.present(videoViewController, animated: false)
         }
+        
     }
     
 }

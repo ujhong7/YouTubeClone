@@ -13,6 +13,7 @@ struct ChannelDTO: Codable {
 
 struct ChannelItem: Codable {
     let snippet: ChannelSnippet
+    let statistics: ChannelStatistics
 }
 
 struct ChannelSnippet: Codable {
@@ -24,11 +25,10 @@ struct ChannelThumbnails: Codable {
 }
 
 struct ChannelThumbnail: Codable {
-    /// 채널 이미지 url
     let url: String
 }
 
 struct ChannelStatistics: Codable {
-    /// 구독자 수
     let subscriberCount: String
 }
+
