@@ -42,6 +42,8 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     
     var subscriberCount: String?
     
+    weak var parentTableView: UITableView?
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 2
@@ -454,40 +456,14 @@ extension VideoViewController {
     }
     
     // MARK: - 화면전환
-    // presentingViewController vs presentedViewController
     private func presentVideoViewController(with item: Item) {
         print(#function)
-        let url = URL(string: "https://www.youtube.com/embed/" + item.id)!
         
-        print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
-        
-        let videoViewController = VideoViewController()
-        videoViewController.videoID = item.id
-        videoViewController.videoURL = url
-        videoViewController.videoTitle = item.snippet.title
-        videoViewController.videoPublishedAt = item.snippet.publishedAt.toDate()?.timeAgoSinceDate()
-        videoViewController.viewCount = Int(item.statistics.viewCount)?.formattedViewCount()
-        videoViewController.channelTitle = item.snippet.channelTitle
-        videoViewController.commentCount = item.statistics.commentCount
-        
-        // 채널이미지, 채널구독자 수
-        if let channelItem = channelItems[item.snippet.channelId] {
-            videoViewController.channelImageURL = channelItem.snippet.thumbnails.high.url
-            videoViewController.subscriberCount = channelItem.statistics.subscriberCount
+        if let parentTableView = parentTableView as? VideoTableView {
+            dismiss(animated: false) {
+                parentTableView.presentVideoViewController(with: item)
+            }
         }
-        
-        videoViewController.modalPresentationStyle = .overFullScreen
-        //        videoViewController.modalTransitionStyle = .crossDissolve
-        
-        let presentedViewController = self.presentedViewController // 지금 ViewController가 띄우는 ViewController -> 여기선 VideoViewController
-        let presentingViewControleller = self.presentingViewController // 지금 ViewController를 띄우는 ViewController -> 여기선 ViewController
-        
-        // animated: false 중요!!!
-        self.dismiss(animated: false) {
-            print(#function)
-            presentingViewControleller?.present(videoViewController, animated: false)
-        }
-        
     }
     
 }

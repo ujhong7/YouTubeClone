@@ -49,12 +49,14 @@ final class VideoTableView: UITableView {
     //        return items
     //    }
     
-    private func presentVideoViewController(with item: Item) {
+    func presentVideoViewController(with item: Item) {
+        
         let url = URL(string: "https://www.youtube.com/embed/" + item.id)!
         
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
         
         let videoViewController = VideoViewController()
+        videoViewController.parentTableView = self
         videoViewController.videoID = item.id
         videoViewController.videoURL = url
         videoViewController.videoTitle = item.snippet.title
