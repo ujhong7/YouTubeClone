@@ -108,7 +108,7 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
         let label = UILabel()
         label.textColor = .gray
         // label.text = commentCount
-        label.text = "\(commentCount!) 개"
+        label.text = "\(commentCount ?? "0") 개"
         label.font = UIFont.systemFont(ofSize: 12)
         return label
     }()
