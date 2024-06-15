@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CommentDetailView: UIView {
+final class CommentDetailView: UIView {
     
     // MARK: - Properties
     

@@ -9,7 +9,7 @@ import UIKit
 import AVKit
 import WebKit
 
-class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDelegate {
+class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDelegate {
     
     // MARK: - Properties
     
@@ -31,10 +31,6 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     var viewCount: String?
     
     var channelTitle: String?
-    
-    //    var channelImage: UIImage? // 채널 이미지 프로퍼티 추가
-    //
-    //    var subscriberCount: String? // 구독자 수 프로퍼티 추가
     
     var commentCount: String?
     
@@ -127,9 +123,11 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
         return tableView
     }()
     
-//    private var tableView: VideoTableView = {
-//
-//    }
+//    private var tableView: DetailVideoTableView = {
+//        let view = DetailVideoTableView()
+//        view.translatesAutoresizingMaskIntoConstraints = false
+//        return view
+//    }()
     
     private var webView: WKWebView = {
         let webConfiguration = WKWebViewConfiguration()   // WKWebView 설정을 위한 WKWebViewConfiguration 생성
@@ -226,7 +224,7 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
 
 // MARK: - @ojbc
 
-extension VideoViewController {
+extension DetailVideoViewController {
     
     @objc private func handleCommentViewTap() {
         print(#function)
@@ -287,7 +285,7 @@ extension VideoViewController {
 
 // MARK: - Autolayout
 
-extension VideoViewController {
+extension DetailVideoViewController {
     
     func setupAutoLayout() {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -393,6 +391,7 @@ extension VideoViewController {
         tableView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
     }
     
+    // ⭐️
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "contentSize", let tableView = object as? UITableView {
             tableViewHeightConstraint.constant = tableView.contentSize.height
@@ -402,7 +401,7 @@ extension VideoViewController {
 }
 
 // MARK: - 비디오 to 비디오
-extension VideoViewController {
+extension DetailVideoViewController {
     
     // MARK: - Networking
     private func requestYouTubeAPI() {
@@ -461,7 +460,7 @@ extension VideoViewController {
         
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
         
-        let videoViewController = VideoViewController()
+        let videoViewController = DetailVideoViewController()
         videoViewController.videoID = item.id
         videoViewController.videoURL = url
         videoViewController.videoTitle = item.snippet.title
@@ -494,7 +493,7 @@ extension VideoViewController {
 
 // MARK: - UITableViewDataSource
 
-extension VideoViewController: UITableViewDataSource {
+extension DetailVideoViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count
@@ -523,7 +522,7 @@ extension VideoViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate
 
-extension VideoViewController: UITableViewDelegate {
+extension DetailVideoViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 306
@@ -539,7 +538,7 @@ extension VideoViewController: UITableViewDelegate {
 
 // MARK: - UIScrollViewDelegate
 
-extension VideoViewController: UIScrollViewDelegate {
+extension DetailVideoViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y < 0 {
             scrollView.contentOffset.y = 0
