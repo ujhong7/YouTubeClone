@@ -70,12 +70,12 @@ class APIManager {
       }
     
     // MARK: - 댓글 가져오기
-      func requestCommentsAPIData(videoId: String, completion: @escaping (Result<[CommentThread], AFError>) -> Void) {
+    func requestCommentsAPIData(videoId: String, maxResults: Int,completion: @escaping (Result<[CommentThread], AFError>) -> Void) {
           let commentsURL = API.baseUrl + "commentThreads"
           let parameters: [String: Any] = [
               "part": "snippet,replies",
               "videoId": videoId,
-              "maxResults": "5",
+              "maxResults": maxResults,
               "key": API.key
           ]
           

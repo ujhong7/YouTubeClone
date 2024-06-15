@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CommentDetailView: UIView {
+final class CommentDetailView: UIView {
     
     // MARK: - Properties
     
@@ -152,7 +152,7 @@ extension CommentDetailView {
         
         print("Fetching comments for videoID: \(videoID)")
         activityIndicator.startAnimating()
-        APIManager.shared.requestCommentsAPIData(videoId: videoID) { [weak self] result in
+        APIManager.shared.requestCommentsAPIData(videoId: videoID, maxResults: 10) { [weak self] result in
             DispatchQueue.main.async {
                 self?.activityIndicator.stopAnimating()
                 switch result {
@@ -167,6 +167,7 @@ extension CommentDetailView {
     }
     
 }
+
 // MARK: - UITableViewDataSource
 
 extension CommentDetailView: UITableViewDataSource {
