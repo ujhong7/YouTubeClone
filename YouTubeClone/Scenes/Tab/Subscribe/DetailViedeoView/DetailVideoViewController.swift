@@ -20,6 +20,8 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
     
     private var channelItems: [String: ChannelItem] = [:]
     
+    private var comments: [CommentThread] = []
+    
     var videoID: String?
     
     var videoURL: URL?
@@ -158,6 +160,7 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
         setupTapGesture()
         setupPanGesture()
         setupScrollView()
+        requestCommentsAPI()
     }
     
     deinit {
@@ -379,6 +382,7 @@ extension DetailVideoViewController {
             
             commentLabel.topAnchor.constraint(equalTo: commentTitleLabel.bottomAnchor, constant: 8),
             commentLabel.leadingAnchor.constraint(equalTo: commentView.leadingAnchor, constant: 10),
+            commentLabel.trailingAnchor.constraint(equalTo: commentView.trailingAnchor, constant: -10),
             
             tableView.topAnchor.constraint(equalTo: commentView.bottomAnchor, constant: 16),
             tableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -546,3 +550,28 @@ extension DetailVideoViewController: UIScrollViewDelegate {
     }
 }
 
+extension DetailVideoViewController {
+    
+    func requestCommentsAPI() {
+         guard let videoID = videoID else {
+             print("Video ID가 없습니다.")
+             return
+         }
+         
+         APIManager.shared.requestCommentsAPIData(videoId: videoID, maxResults: 1) { [weak self] result in
+             DispatchQueue.main.async {
+                 switch result {
+                 case .success(let comments):
+                     self?.comments = comments
+                     if let firstComment = comments.first {
+                         self?.commentLabel.text = firstComment.snippet.topLevelComment.snippet.textOriginal
+                     }
+                     print("👿👿👿👿\(comments)")
+                 case .failure(let error):
+                     print("Failed to fetch comments: \(error)")
+                 }
+             }
+         }
+     }
+    
+}
