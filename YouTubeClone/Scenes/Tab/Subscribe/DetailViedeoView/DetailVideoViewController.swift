@@ -40,6 +40,8 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
     
     var subscriberCount: String?
     
+    weak var parentTableView: UITableView?
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 2
@@ -457,10 +459,8 @@ extension DetailVideoViewController {
     }
     
     // MARK: - 화면전환
-    // presentingViewController vs presentedViewController
     private func presentVideoViewController(with item: Item) {
         print(#function)
-        let url = URL(string: "https://www.youtube.com/embed/" + item.id)!
         
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
         
@@ -478,19 +478,6 @@ extension DetailVideoViewController {
             videoViewController.channelImageURL = channelItem.snippet.thumbnails.high.url
             videoViewController.subscriberCount = channelItem.statistics.subscriberCount
         }
-        
-        videoViewController.modalPresentationStyle = .overFullScreen
-        //        videoViewController.modalTransitionStyle = .crossDissolve
-        
-        let presentedViewController = self.presentedViewController // 지금 ViewController가 띄우는 ViewController -> 여기선 VideoViewController
-        let presentingViewControleller = self.presentingViewController // 지금 ViewController를 띄우는 ViewController -> 여기선 ViewController
-        
-        // animated: false 중요!!!
-        self.dismiss(animated: false) {
-            print(#function)
-            presentingViewControleller?.present(videoViewController, animated: false)
-        }
-        
     }
     
 }
