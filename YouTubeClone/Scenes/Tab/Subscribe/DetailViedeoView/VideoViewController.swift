@@ -9,7 +9,7 @@ import UIKit
 import AVKit
 import WebKit
 
-class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDelegate {
+final class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDelegate {
     
     // MARK: - Properties
     
@@ -41,8 +41,6 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     var channelImageURL: String?
     
     var subscriberCount: String?
-    
-    weak var parentTableView: UITableView?
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -123,15 +121,12 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
         label.font = UIFont.systemFont(ofSize: 12)
         return label
     }()
-    
-    private var tableView: UITableView = {
-        let tableView =  UITableView(frame: .zero)
+
+    var tableView: VideoTableView = {
+        let tableView =  VideoTableView()
+        tableView.isPresentAnimation = false // VideoViewController 에 존재하는 tableView 를 클릭했을땐 present 애니메이션이 없어야하므로 false 로 설정
         return tableView
     }()
-    
-//    private var tableView: VideoTableView = {
-//
-//    }
     
     private var webView: WKWebView = {
         let webConfiguration = WKWebViewConfiguration()   // WKWebView 설정을 위한 WKWebViewConfiguration 생성
@@ -153,15 +148,11 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        requestYouTubeAPI()
-        loadChannelImage()
         setupVideoPlayer()
         setupAutoLayout()
-        setupTableView()
         setupCollectionView()
         setupTapGesture()
         setupPanGesture()
-        setupScrollView()
     }
     
     deinit {
@@ -169,43 +160,11 @@ class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecognizerDe
     }
     
     // MARK: - Methods
-    
-    private func loadChannelImage() {
-        guard let channelImageURLString = channelImageURL, let url = URL(string: channelImageURLString) else {
-            return
-        }
-        setImage(for: profileImageButton, from: url)
-    }
-    
-    private func setImage(for button: UIButton, from url: URL) {
-        DispatchQueue.global().async {
-            if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    button.setImage(image, for: .normal)
-                }
-            } else {
-                DispatchQueue.main.async {
-                    // Handle error case here if needed
-                }
-            }
-        }
-    }
-    
     func setupVideoPlayer() {
         guard let videoURL = videoURL else { return }
         let request = URLRequest(url: videoURL)
         webView.load(request)
         webView.uiDelegate = self
-    }
-    
-    private func setupTableView() {
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.register(VideoTableViewCell.self, forCellReuseIdentifier: "VideoCell")
-    }
-    
-    private func setupScrollView() {
-        scrollView.delegate = self
     }
     
     private func setupCollectionView() {
@@ -280,11 +239,6 @@ extension VideoViewController {
             break
         }
     }
-    
-    @objc func dismissViewController() {
-        dismiss(animated: true, completion: nil)
-    }
-    
 }
 
 // MARK: - Autolayout
@@ -400,126 +354,4 @@ extension VideoViewController {
             tableViewHeightConstraint.constant = tableView.contentSize.height
         }
     }
-    
 }
-
-// MARK: - 비디오 to 비디오
-extension VideoViewController {
-    
-    // MARK: - Networking
-    private func requestYouTubeAPI() {
-        print(#function)
-        APIManager.shared.requestYouTubeAPIData { [weak self] result in
-            switch result {
-            case .success(let data):
-                dump(data)
-                DispatchQueue.main.async {
-                    self?.items = data
-                    
-                    // ☀️ 이런식으로 필터 (필터할때 가장 좋은 방법은 고유 ID로 비교)
-                    // self?.items = data.filter { $0.id != self?.videoTitle}
-                    
-                    self?.tableView.reloadData()
-                    //self?.refreshControl.endRefreshing() // refresh종료를 위해..
-                }
-                
-                // channelId를 추출하고 requestChannelProfileImageAPI 호출
-                data.forEach { item in
-                    // 'Item' 모델에 'channelId'가 있다고 가정
-                    self?.requestChannelProfileImageAPI(with: item.snippet.channelId)
-                    
-                }
-                
-            case .failure(let error):
-                print("데이터를 받아오는데 실패했습니다: \(error)")
-                // self?.refreshControl.endRefreshing()
-            }
-        }
-    }
-    
-    private func requestChannelProfileImageAPI(with channelId: String) {
-        print(#function)
-        APIManager.shared.requestChannelAPIData(channelId: channelId) { [weak self] result in
-            switch result {
-            case .success(let data):
-                dump(data)
-                DispatchQueue.main.async {
-                    // channelId를 키로 하여 channelItems 딕셔너리에 추가
-                    //                    self?.channelItems[channelId] = data
-                    self?.channelItems[channelId] = data.first
-                    self?.tableView.reloadData() // 새로운 데이터로 테이블 뷰 갱신
-                }
-            case .failure(let error):
-                print("에러: \(error)")
-            }
-        }
-    }
-    
-    // MARK: - 화면전환
-    private func presentVideoViewController(with item: Item) {
-        print(#function)
-        if let parentTableView = parentTableView as? VideoTableView {
-            dismiss(animated: false) {
-                parentTableView.presentVideoViewController(with: item,
-                                                           isClickVideoController: true)
-            }
-        }
-    }
-    
-}
-
-// MARK: - UITableViewDataSource
-
-extension VideoViewController: UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "VideoCell", for: indexPath) as? VideoTableViewCell else {
-            return UITableViewCell()
-        }
-        
-        let item = items[indexPath.row]
-        
-        // item의 channelId를 사용하여 channelItems 딕셔너리에서 해당 채널 데이터 찾기
-        
-        if let channelItem = channelItems[item.snippet.channelId] {
-            cell.configure(item: item, channelItem: channelItem)
-        } else {
-            // 채널 데이터가 없는 경우, 기본 정보만으로 셀 구성
-            // ???
-        }
-        
-        return cell
-    }
-    
-}
-
-// MARK: - UITableViewDelegate
-
-extension VideoViewController: UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 306
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(#function)
-        let item = items[indexPath.row]
-        presentVideoViewController(with: item)
-    }
-    
-}
-
-// MARK: - UIScrollViewDelegate
-
-extension VideoViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y < 0 {
-            scrollView.contentOffset.y = 0
-        }
-    }
-}
-

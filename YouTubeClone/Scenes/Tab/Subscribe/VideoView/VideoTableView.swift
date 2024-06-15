@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - 영상에 대한 전반적인 정보를 담고 있는 테이블뷰
 final class VideoTableView: UITableView {
     
     // MARK: - Properties
@@ -18,10 +19,8 @@ final class VideoTableView: UITableView {
     
     private var channelItems: [String: ChannelItem] = [:]
     
-    //    var items: [Item] = []
-    //
-    //    private var channelItems: [String: ChannelItem] = [:]
-    
+    /// present 애니메이션 설정해주기 위한 프로퍼티
+    var isPresentAnimation: Bool = true
     
     // MARK: - Init
     
@@ -49,14 +48,14 @@ final class VideoTableView: UITableView {
     //        return items
     //    }
     
-    func presentVideoViewController(with item: Item, isClickVideoController: Bool = false) {
+    func presentVideoViewController(with item: Item) {
         
         let url = URL(string: "https://www.youtube.com/embed/" + item.id)!
         
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
         
         let videoViewController = VideoViewController()
-        videoViewController.parentTableView = self
+        videoViewController.tableView.parentViewController = parentViewController
         videoViewController.videoID = item.id
         videoViewController.videoURL = url
         videoViewController.videoTitle = item.snippet.title
@@ -64,6 +63,7 @@ final class VideoTableView: UITableView {
         videoViewController.viewCount = Int(item.statistics.viewCount)?.formattedViewCount()
         videoViewController.channelTitle = item.snippet.channelTitle
         videoViewController.commentCount = item.statistics.commentCount
+        
         
         // 채널이미지, 채널구독자 수
         if let channelItem = channelItems[item.snippet.channelId] {
@@ -76,9 +76,9 @@ final class VideoTableView: UITableView {
         
         // ⭐️
         if let parentVC = parentViewController as? SubscribeViewController {
-            parentVC.present(videoViewController,
-                             animated: isClickVideoController ? false : true,
-                             completion: nil)
+            parentVC.dismiss(animated: false) {
+                parentVC.present(videoViewController, animated: self.isPresentAnimation)
+            }
         }
     }
     
