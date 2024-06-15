@@ -27,7 +27,7 @@ final class VideoTableView: UITableView {
     init() {
         super.init(frame: .zero, style: .plain)
         configureTableView()
-        requestYouTubeAPI()
+        //requestYouTubeAPI()
     }
     
     required init?(coder: NSCoder) {
@@ -64,7 +64,6 @@ final class VideoTableView: UITableView {
         videoViewController.channelTitle = item.snippet.channelTitle
         videoViewController.commentCount = item.statistics.commentCount
         
-        
         // 채널이미지, 채널구독자 수
         if let channelItem = channelItems[item.snippet.channelId] {
             videoViewController.channelImageURL = channelItem.snippet.thumbnails.high.url
@@ -80,6 +79,14 @@ final class VideoTableView: UITableView {
                 parentVC.present(videoViewController, animated: self.isPresentAnimation)
             }
         }
+    }
+    
+    func requestInSubscribeVC() {
+        requestYouTubeAPI()
+    }
+    
+    func requestInVideoVC() {
+        requestYouTubeAPI()
     }
     
 }

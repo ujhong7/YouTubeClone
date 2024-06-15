@@ -123,7 +123,7 @@ final class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
     }()
 
     var tableView: VideoTableView = {
-        let tableView =  VideoTableView()
+        let tableView = VideoTableView()
         tableView.isPresentAnimation = false // VideoViewController 에 존재하는 tableView 를 클릭했을땐 present 애니메이션이 없어야하므로 false 로 설정
         return tableView
     }()
@@ -153,6 +153,9 @@ final class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
         setupCollectionView()
         setupTapGesture()
         setupPanGesture()
+        
+        // TODO: - tableView API 호춣
+        tableView.requestInVideoVC()
     }
     
     deinit {

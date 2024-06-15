@@ -89,6 +89,8 @@ final class SubscribeViewController: UIViewController {
         view.addSubview(videoTableView)
         
         videoTableView.parentViewController = self
+        
+        videoTableView.requestInSubscribeVC()
     }
     
 //    private func setupRefreshControl() {
