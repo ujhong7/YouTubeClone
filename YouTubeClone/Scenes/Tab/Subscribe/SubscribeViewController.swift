@@ -18,9 +18,6 @@ final class SubscribeViewController: UIViewController {
     
     // MARK: - Properties
     
-    private let tabTitles = ["전체", "오늘", "동영상", "Shorts",
-                             "이어서 시청하기", "라이브", "게시물"]
-    
     private let channel = ChannelData()
     
 //    /// 유튜브 API 데이터
@@ -36,7 +33,7 @@ final class SubscribeViewController: UIViewController {
     }()
     
     private var tabViewCollectionView: TabButtonCollectionView = {
-        let view = TabButtonCollectionView()
+        let view = TabButtonCollectionView(postion: .subscribe)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()

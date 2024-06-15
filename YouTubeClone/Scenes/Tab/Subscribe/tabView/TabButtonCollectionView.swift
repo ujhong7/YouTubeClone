@@ -7,28 +7,51 @@
 
 import UIKit
 
+enum TabPosition {
+    case none
+    case home
+    case subscribe
+    case detailViewController
+}
+
 final class TabButtonCollectionView: UICollectionView {
     
     // MARK: - Properties
     
-    private let tabTitles = ["전체", "오늘", "동영상", "Shorts",
+    private var tabTitles = [""]
+    
+    private let subscribeTabTitles = ["전체", "오늘", "동영상", "Shorts",
                              "이어서 시청하기", "라이브", "게시물"]
+    
+    private let detailViewControllerTabTitles = ["Aadsa","Bxcvcxv","Cadsa","Dwewe","Excxc","Fqwqw","Gzxcc"]
+    
+    private let tabPosition: TabPosition = .none
     
     // MARK: - Init
     
-    init(layout: TabButtonCollectionViewFlowLayout) {
+    init(layout: TabButtonCollectionViewFlowLayout = TabButtonCollectionViewFlowLayout(), postion: TabPosition) {
         super.init(frame: .zero, collectionViewLayout: layout)
         configureCollectionView()
+        switch postion {
+        case .none:
+            break
+        case .home:
+            break
+        case .subscribe:
+            tabTitles = subscribeTabTitles
+        case .detailViewController:
+            tabTitles = detailViewControllerTabTitles
+        }
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    convenience init() {
-        let layout = TabButtonCollectionViewFlowLayout()
-        self.init(layout: layout)
-    }
+//    convenience init() {
+//        let layout = TabButtonCollectionViewFlowLayout()
+//        self.init(layout: layout)
+//    }
     
     // MARK: - Methods
     

@@ -85,7 +85,7 @@ final class VideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
     }()
     
     private var tabViewCollectionView: TabButtonCollectionView = {
-        let view = TabButtonCollectionView()
+        let view = TabButtonCollectionView(postion: .detailViewController)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
