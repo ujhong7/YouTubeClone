@@ -458,10 +458,10 @@ extension VideoViewController {
     // MARK: - 화면전환
     private func presentVideoViewController(with item: Item) {
         print(#function)
-        
         if let parentTableView = parentTableView as? VideoTableView {
             dismiss(animated: false) {
-                parentTableView.presentVideoViewController(with: item)
+                parentTableView.presentVideoViewController(with: item,
+                                                           isClickVideoController: true)
             }
         }
     }

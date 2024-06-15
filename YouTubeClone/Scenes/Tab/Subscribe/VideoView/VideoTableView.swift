@@ -49,7 +49,7 @@ final class VideoTableView: UITableView {
     //        return items
     //    }
     
-    func presentVideoViewController(with item: Item) {
+    func presentVideoViewController(with item: Item, isClickVideoController: Bool = false) {
         
         let url = URL(string: "https://www.youtube.com/embed/" + item.id)!
         
@@ -76,7 +76,9 @@ final class VideoTableView: UITableView {
         
         // ⭐️
         if let parentVC = parentViewController as? SubscribeViewController {
-            parentVC.present(videoViewController, animated: true, completion: nil)
+            parentVC.present(videoViewController,
+                             animated: isClickVideoController ? false : true,
+                             completion: nil)
         }
     }
     
