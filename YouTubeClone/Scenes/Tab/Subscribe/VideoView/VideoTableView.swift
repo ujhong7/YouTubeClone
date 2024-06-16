@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - 영상에 대한 전반적인 정보를 담고 있는 테이블뷰
 final class VideoTableView: UITableView {
     
     // MARK: - Properties
@@ -17,13 +18,16 @@ final class VideoTableView: UITableView {
     private var items: [Item] = []
     
     private var channelItems: [String: ChannelItem] = [:]
-    
+
+    /// present 애니메이션 설정해주기 위한 프로퍼티
+    var isPresentAnimation: Bool = true
+
     // MARK: - Init
     
     init() {
         super.init(frame: .zero, style: .plain)
         configureTableView()
-        requestYouTubeAPI()
+        //requestYouTubeAPI()
     }
     
     required init?(coder: NSCoder) {
@@ -44,12 +48,14 @@ final class VideoTableView: UITableView {
     //        return items
     //    }
     
-    private func presentVideoViewController(with item: Item) {
+    func presentVideoViewController(with item: Item) {
+        
         let url = URL(string: "https://www.youtube.com/embed/" + item.id)!
         
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
         
         let videoViewController = DetailVideoViewController()
+        videoViewController.tableView.parentViewController = parentViewController
         videoViewController.videoID = item.id
         videoViewController.videoURL = url
         videoViewController.videoTitle = item.snippet.title
@@ -69,8 +75,18 @@ final class VideoTableView: UITableView {
         
         // ⭐️
         if let parentVC = parentViewController as? SubscribeViewController {
-            parentVC.present(videoViewController, animated: true, completion: nil)
+            parentVC.dismiss(animated: false) {
+                parentVC.present(videoViewController, animated: self.isPresentAnimation)
+            }
         }
+    }
+    
+    func requestInSubscribeVC() {
+        requestYouTubeAPI()
+    }
+    
+    func requestInVideoVC() {
+        requestYouTubeAPI()
     }
     
 }
