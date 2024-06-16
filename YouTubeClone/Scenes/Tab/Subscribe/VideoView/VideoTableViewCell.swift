@@ -109,8 +109,9 @@ final class VideoTableViewCell: UITableViewCell {
         kebabButton.addGestureRecognizer(kebabButtonTapGesture)
     }
     
-    func configure(item: Item, channelItem: ChannelItem) {
-        guard let viewCount = Int(item.statistics.viewCount) else { return }
+    // TODO: - 조회수 정보 가져오는 방법 찾기
+    func configure(item: Item, channelItem: ChannelItem?) {
+        guard let viewCount = Int(item.statistics?.viewCount ?? "0") else { return }
         let formattedViewCount = viewCount.formattedViewCount()
         let channelName = item.snippet.channelTitle
         guard let publishedDate = item.snippet.publishedAt.toDate() else { return }
@@ -118,7 +119,7 @@ final class VideoTableViewCell: UITableViewCell {
         titleLabel.text = item.snippet.title
         subtitleLabel.text = "\(channelName) ・ \(formattedViewCount) ・ \(publishedDate.timeAgoSinceDate(numericDates: true))"
         loadThumbnailImage(from: item.snippet.thumbnails.medium.url)
-        loadChannelImage(from: channelItem.snippet.thumbnails.high.url)
+        loadChannelImage(from: channelItem?.snippet.thumbnails.high.url ?? "")
     }
 
     // MARK: - loadImage

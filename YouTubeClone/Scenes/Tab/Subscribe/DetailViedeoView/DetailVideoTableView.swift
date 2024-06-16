@@ -89,18 +89,18 @@ final class DetailVideoTableView: UITableView {
     
     private func presentVideoViewController(with item: Item) {
         print(#function)
-        let url = URL(string: "https://www.youtube.com/embed/" + item.id)!
+        let url = URL(string: "https://www.youtube.com/embed/" + item.id.videoId)!
         
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
         
         let videoViewController = DetailVideoViewController()
-        videoViewController.videoID = item.id
+        videoViewController.videoID = item.id.videoId
         videoViewController.videoURL = url
         videoViewController.videoTitle = item.snippet.title
         videoViewController.videoPublishedAt = item.snippet.publishedAt.toDate()?.timeAgoSinceDate()
-        videoViewController.viewCount = Int(item.statistics.viewCount)?.formattedViewCount()
+        videoViewController.viewCount = Int(item.statistics?.viewCount ?? "0")?.formattedViewCount()
         videoViewController.channelTitle = item.snippet.channelTitle
-        videoViewController.commentCount = item.statistics.commentCount
+        videoViewController.commentCount = item.statistics?.commentCount ?? "0"
         
         // 채널이미지, 채널구독자 수
         if let channelItem = channelItems[item.snippet.channelId] {

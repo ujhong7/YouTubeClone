@@ -43,6 +43,19 @@ final class VideoTableView: UITableView {
         delegate = self
     }
     
+    func updateVideos(_ videos: [Item], completion: @escaping () -> Void) {
+        self.items = videos
+        
+        // channelId를 추출하고 requestChannelProfileImageAPI 호출
+        self.items.forEach { item in
+            // 'Item' 모델에 'channelId'가 있다고 가정
+            self.requestChannelProfileImageAPI(with: item.snippet.channelId)
+        }
+        
+        reloadData()
+        completion()
+    }
+    
     // ☀️ private 프로퍼티를 다른곳에서 사용하는 방법...메서드를 만들자
     //    func getVideoItems() -> [Item] {
     //        return items
@@ -50,19 +63,19 @@ final class VideoTableView: UITableView {
     
     func presentVideoViewController(with item: Item) {
         
-        let url = URL(string: "https://www.youtube.com/embed/" + item.id)!
+        let url = URL(string: "https://www.youtube.com/embed/" + item.id.videoId)!
         
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
         
         let videoViewController = DetailVideoViewController()
         videoViewController.tableView.parentViewController = parentViewController
-        videoViewController.videoID = item.id
+        videoViewController.videoID = item.id.videoId
         videoViewController.videoURL = url
         videoViewController.videoTitle = item.snippet.title
         videoViewController.videoPublishedAt = item.snippet.publishedAt.toDate()?.timeAgoSinceDate()
-        videoViewController.viewCount = Int(item.statistics.viewCount)?.formattedViewCount()
+        videoViewController.viewCount = Int(item.statistics?.viewCount ?? "0")?.formattedViewCount()
         videoViewController.channelTitle = item.snippet.channelTitle
-        videoViewController.commentCount = item.statistics.commentCount
+        videoViewController.commentCount = item.statistics?.commentCount ?? "0"
         
         // 채널이미지, 채널구독자 수
         if let channelItem = channelItems[item.snippet.channelId] {
@@ -112,7 +125,6 @@ extension VideoTableView {
                 data.forEach { item in
                     // 'Item' 모델에 'channelId'가 있다고 가정
                     self?.requestChannelProfileImageAPI(with: item.snippet.channelId)
-                    
                 }
                 
             case .failure(let error):
@@ -158,9 +170,11 @@ extension VideoTableView: UITableViewDataSource {
         }
         
         let item = items[indexPath.row]
+        
         if let channelItem = channelItems[item.snippet.channelId] {
             cell.configure(item: item, channelItem: channelItem)
         }
+        
         return cell
     }
 }

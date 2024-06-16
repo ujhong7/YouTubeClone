@@ -36,7 +36,6 @@ final class ChannelCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         configureUI()
         setupAutoLayout()
-        //setupTapGesture()
     }
     
     required init?(coder: NSCoder) {
@@ -67,19 +66,16 @@ final class ChannelCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func setData(image: UIImage?, name: String?) {
-        channelImageView.image = image
-        channelNameTextLabel.text = name
+    func configure(_ channel: Channel) {
+        channelNameTextLabel.text = channel.name
+        channelImageView.loadImage(from: channel.thumbnail)
     }
     
-    // MARK: - @objc
-    
-    private func setupTapGesture() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(contentViewTapped))
-        contentView.addGestureRecognizer(tapGesture)
+    func resetBackgroundColor() {
+        backgroundColor = .systemBackground
     }
     
-    @objc private func contentViewTapped() {
-        print(#function)
+    func changeSelectedBackgroundColor() {
+        self.backgroundColor = .systemGray6
     }
 }
