@@ -146,6 +146,7 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        loadChannelImage()
         setupVideoPlayer()
         setupAutoLayout()
         setupCollectionView()
@@ -162,6 +163,28 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
     }
     
     // MARK: - Methods
+    
+    private func loadChannelImage() {
+        guard let channelImageURLString = channelImageURL, let url = URL(string: channelImageURLString) else {
+            return
+        }
+        setImage(for: profileImageButton, from: url)
+    }
+    
+    private func setImage(for button: UIButton, from url: URL) {
+        DispatchQueue.global().async {
+            if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    button.setImage(image, for: .normal)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    // Handle error case here if needed
+                }
+            }
+        }
+    }
+    
     func setupVideoPlayer() {
         guard let videoURL = videoURL else { return }
         let request = URLRequest(url: videoURL)
