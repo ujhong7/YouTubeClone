@@ -10,7 +10,7 @@ import Alamofire
 
 enum API {
     static let baseUrl: String = "https://youtube.googleapis.com/youtube/v3/"
-    static let key: String = "AIzaSyCvV1WGDwCtMk_SDzvh7Vou9tlLg4DwcqE"
+    static let key: String = "AIzaSyBkEL7Su2Bx9Lyu7efXjZWc_EjJGFXeCZU"
     
     // 준
     // AIzaSyCvV1WGDwCtMk_SDzvh7Vou9tlLg4DwcqE
@@ -90,7 +90,25 @@ class APIManager {
                   }
               }
       }
-
+    // MARK: - 구독 클릭 후 데이터 가져오기
+    func requestSubscribeVideoData(id: String, completion: @escaping (Result<[Item], AFError>) -> Void) {
+        let channelURL = "https://www.googleapis.com/youtube/v3/search?key=\(API.key)&channelId=\(id)&part=snippet&type=video"
+        let parameters: [String: Any] = [
+            "maxResults": 10,
+        ]
+        
+        AF.request(channelURL, parameters: parameters)
+            .validate()
+            .responseDecodable(of: YouTubeDTO.self) { response in
+                switch response.result {
+                case .success(let channelDTO):
+                    completion(.success(channelDTO.items))
+                case .failure(let error):
+                    print("Error: \(error.localizedDescription)") // 에러를 로깅
+                    completion(.failure(error))
+                }
+            }
+    }
 }
 
 // ⭐️ 유튜브 동영상 URL 여기다 넣으면됨
