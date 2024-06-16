@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class CommentTableViewCell: UITableViewCell {
+class CommentTableViewCell: UITableViewCell {
     
     // MARK: - Properties
     

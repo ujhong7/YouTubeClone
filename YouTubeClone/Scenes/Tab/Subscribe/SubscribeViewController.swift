@@ -20,6 +20,12 @@ final class SubscribeViewController: UIViewController {
     
     private let channel = ChannelData()
     
+//    /// 유튜브 API 데이터
+//    private var items: [Item] = []
+//    
+//    //    var channelItems: [ChannelItem] = []
+//    private var channelItems: [String: ChannelItem] = [:]
+    
     private var channelCollectionView: ChannelCollectionView = {
         let view = ChannelCollectionView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -155,7 +161,7 @@ extension SubscribeViewController {
         let url = URL(string: "https://www.youtube.com/embed/" + item.id)!
         
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
-        let videoViewController = DetailVideoViewController()
+        let videoViewController = VideoViewController()
         
 
         // ☀️ 이런식으로 Item을 다 받아와야 확장성있게 데이터를 사용할 수 있음...

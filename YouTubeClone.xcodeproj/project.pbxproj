@@ -35,7 +35,7 @@
 		1DD0F7C42C081EEE00C5AB80 /* TabButtonCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD0F7C32C081EEE00C5AB80 /* TabButtonCollectionViewFlowLayout.swift */; };
 		1DD0F7C72C095FD000C5AB80 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD0F7C62C095FD000C5AB80 /* APIManager.swift */; };
 		1DD0F7C92C09601900C5AB80 /* YouTubeDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD0F7C82C09601900C5AB80 /* YouTubeDTO.swift */; };
-		1DD0F7CB2C0A26D500C5AB80 /* DetailVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD0F7CA2C0A26D500C5AB80 /* DetailVideoViewController.swift */; };
+		1DD0F7CB2C0A26D500C5AB80 /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD0F7CA2C0A26D500C5AB80 /* VideoViewController.swift */; };
 		1DD0F7CD2C0A527A00C5AB80 /* ChannelDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD0F7CC2C0A527A00C5AB80 /* ChannelDTO.swift */; };
 		1DD0F7D52C0D958600C5AB80 /* VideoTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD0F7D42C0D958600C5AB80 /* VideoTableView.swift */; };
 		1DE69EE12BB185750001CAB4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE69EE02BB185750001CAB4 /* AppDelegate.swift */; };
@@ -91,7 +91,7 @@
 		1DD0F7C32C081EEE00C5AB80 /* TabButtonCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabButtonCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		1DD0F7C62C095FD000C5AB80 /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
 		1DD0F7C82C09601900C5AB80 /* YouTubeDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeDTO.swift; sourceTree = "<group>"; };
-		1DD0F7CA2C0A26D500C5AB80 /* DetailVideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailVideoViewController.swift; sourceTree = "<group>"; };
+		1DD0F7CA2C0A26D500C5AB80 /* VideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
 		1DD0F7CC2C0A527A00C5AB80 /* ChannelDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDTO.swift; sourceTree = "<group>"; };
 		1DD0F7D42C0D958600C5AB80 /* VideoTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoTableView.swift; sourceTree = "<group>"; };
 		1DE69EDD2BB185750001CAB4 /* YouTubeClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YouTubeClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -302,7 +302,7 @@
 		1DD0F7DE2C11930600C5AB80 /* DetailViedeoView */ = {
 			isa = PBXGroup;
 			children = (
-				1DD0F7CA2C0A26D500C5AB80 /* DetailVideoViewController.swift */,
+				1DD0F7CA2C0A26D500C5AB80 /* VideoViewController.swift */,
 				1DAEB70B2C14329500BB6843 /* CommentDetailView.swift */,
 				1DAEB70F2C16ED8D00BB6843 /* CommentTableViewCell.swift */,
 			);
@@ -470,7 +470,7 @@
 				1D73D39E2BF464F700A9B782 /* TabButtonCollectionViewCell.swift in Sources */,
 				1DB508972BCD4A310096A747 /* SubscribeViewController.swift in Sources */,
 				1DD0F7C22C081E2900C5AB80 /* ChannelCollectionViewFlowLayout.swift in Sources */,
-				1DD0F7CB2C0A26D500C5AB80 /* DetailVideoViewController.swift in Sources */,
+				1DD0F7CB2C0A26D500C5AB80 /* VideoViewController.swift in Sources */,
 				1DB508932BCD4A200096A747 /* ShortsViewController.swift in Sources */,
 				1DB5088E2BCD49410096A747 /* MainTabController.swift in Sources */,
 				1DE69EFB2BB19E5A0001CAB4 /* LoginInfoStackView.swift in Sources */,
