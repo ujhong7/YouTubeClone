@@ -13,44 +13,24 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
     
     // MARK: - Properties
     
-    var videos: [Video] = []
+    var item: Item?
     
-    /// API 호출 후 데이터를 받기위한 배열
-    var items: [Item] = []
+    var channelItem: ChannelItem?
     
-    private var channelItems: [String: ChannelItem] = [:]
-    
+    /// 댓글 API 데이터 받기위한 배열
     private var comments: [CommentThread] = []
     
-    var videoID: String?
-    
     var videoURL: URL?
-    
-    var videoTitle: String?
-    
-    var videoPublishedAt: String?
-    
-    var viewCount: String?
-    
-    var channelTitle: String?
-    
-    var commentCount: String?
-    
-    var channelImageURL: String?
-    
-    var subscriberCount: String?
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 2
-        label.text = videoTitle
         label.font = UIFont.boldSystemFont(ofSize: 17)
         return label
     }()
     
     private lazy var subtitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "조회수 \(viewCount!)  \(videoPublishedAt!)"
         label.textColor = .gray
         label.font = UIFont.boldSystemFont(ofSize: 12)
         return label
@@ -69,14 +49,12 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
     
     private lazy var channelTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = channelTitle
         label.font = UIFont.boldSystemFont(ofSize: 14)
         return label
     }()
     
     private lazy var subscriberCountLabel: UILabel = {
         let label = UILabel()
-        label.text = Int(subscriberCount!)?.formattedSubscriberCount()
         label.textColor = .gray
         label.font = UIFont.systemFont(ofSize: 12)
         return label
@@ -107,8 +85,6 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
     private lazy var commentCountLabel: UILabel = {
         let label = UILabel()
         label.textColor = .gray
-        // label.text = commentCount
-        label.text = "\(commentCount ?? "0") 개"
         label.font = UIFont.systemFont(ofSize: 12)
         return label
     }()
@@ -119,7 +95,7 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
         label.font = UIFont.systemFont(ofSize: 12)
         return label
     }()
-
+    
     var tableView: VideoTableView = {
         let tableView = VideoTableView()
         tableView.isPresentAnimation = false // VideoViewController 에 존재하는 tableView 를 클릭했을땐 present 애니메이션이 없어야하므로 false 로 설정
@@ -146,13 +122,13 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        loadChannelImage()
         setupVideoPlayer()
         setupAutoLayout()
         setupCollectionView()
         setupTapGesture()
         setupPanGesture()
         requestCommentsAPI()
+        setupData()
         
         // TODO: - tableView API 호춣
         tableView.requestInVideoVC()
@@ -164,11 +140,22 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
     
     // MARK: - Methods
     
-    private func loadChannelImage() {
-        guard let channelImageURLString = channelImageURL, let url = URL(string: channelImageURLString) else {
-            return
+    private func setupData() {
+        guard let item = item else { return }
+        let videoTitle = item.snippet.title
+        let videoPublishedAt = item.snippet.publishedAt.toDate()?.timeAgoSinceDate()
+        let viewCount = Int(item.statistics.viewCount)?.formattedViewCount()
+        let channelTitle = item.snippet.channelTitle
+        let commentCount = item.statistics.commentCount
+        
+        titleLabel.text = videoTitle
+        subtitleLabel.text = "조회수 \(viewCount!)  \(videoPublishedAt!)"
+        channelTitleLabel.text = channelTitle
+        subscriberCountLabel.text = Int(channelItem?.statistics.subscriberCount ?? "0")?.formattedSubscriberCount()
+        
+        if let channelImageURL = channelItem?.snippet.thumbnails.high.url, let url = URL(string: channelImageURL) {
+            setImage(for: profileImageButton, from: url)
         }
-        setImage(for: profileImageButton, from: url)
     }
     
     private func setImage(for button: UIButton, from url: URL) {
@@ -214,10 +201,11 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
 
 extension DetailVideoViewController {
     
+    /// 댓글뷰 탭했을때 댓글화면 올라오기
     @objc private func handleCommentViewTap() {
         print(#function)
         // videoID가 존재하는지 확인하고 안전하게 언래핑
-        guard let videoID = videoID else {
+        guard let videoID = item?.id else {
             print("Video ID가 없습니다.")
             return
         }
@@ -271,38 +259,16 @@ extension DetailVideoViewController {
 extension DetailVideoViewController {
     
     func setupAutoLayout() {
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        webView.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        profileImageButton.translatesAutoresizingMaskIntoConstraints = false
-        channelTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        subscriberCountLabel.translatesAutoresizingMaskIntoConstraints = false
-        tabViewCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        commentView.translatesAutoresizingMaskIntoConstraints = false
-        commentTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        commentCountLabel.translatesAutoresizingMaskIntoConstraints = false
-        commentLabel.translatesAutoresizingMaskIntoConstraints = false
-        tableView.translatesAutoresizingMaskIntoConstraints = false
+        [scrollView, contentView, webView, titleLabel, subtitleLabel, profileImageButton, channelTitleLabel, subscriberCountLabel, tabViewCollectionView, commentView, commentTitleLabel, commentCountLabel, commentLabel, tableView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         
         view.addSubview(webView)
         view.addSubview(scrollView)
         
         scrollView.addSubview(contentView)
         
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(subtitleLabel)
-        contentView.addSubview(profileImageButton)
-        contentView.addSubview(channelTitleLabel)
-        contentView.addSubview(subscriberCountLabel)
-        contentView.addSubview(tabViewCollectionView)
-        contentView.addSubview(commentView)
-        contentView.addSubview(tableView)
+        [titleLabel, subtitleLabel, profileImageButton, channelTitleLabel, subscriberCountLabel, tabViewCollectionView, commentView, tableView].forEach { contentView.addSubview($0) }
         
-        commentView.addSubview(commentTitleLabel)
-        commentView.addSubview(commentCountLabel)
-        commentView.addSubview(commentLabel)
+        [commentTitleLabel, commentCountLabel, commentLabel].forEach { commentView.addSubview($0) }
         
         // 테이블 뷰의 높이 제약 조건 설정
         tableViewHeightConstraint = tableView.heightAnchor.constraint(equalToConstant: 400) // 임시 높이
@@ -396,24 +362,24 @@ extension DetailVideoViewController: UIScrollViewDelegate {
 extension DetailVideoViewController {
     
     func requestCommentsAPI() {
-         guard let videoID = videoID else {
-             print("Video ID가 없습니다.")
-             return
-         }
-         
-         APIManager.shared.requestCommentsAPIData(videoId: videoID, maxResults: 1) { [weak self] result in
-             DispatchQueue.main.async {
-                 switch result {
-                 case .success(let comments):
-                     self?.comments = comments
-                     if let firstComment = comments.first {
-                         self?.commentLabel.text = firstComment.snippet.topLevelComment.snippet.textOriginal
-                     }
-                     print("👿👿👿👿\(comments)")
-                 case .failure(let error):
-                     print("Failed to fetch comments: \(error)")
-                 }
-             }
-         }
-     }
+        guard let videoID = item?.id else {
+            print("Video ID가 없습니다.")
+            return
+        }
+        
+        APIManager.shared.requestCommentsAPIData(videoId: videoID, maxResults: 1) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let comments):
+                    self?.comments = comments
+                    if let firstComment = comments.first {
+                        self?.commentLabel.text = firstComment.snippet.topLevelComment.snippet.textOriginal
+                    }
+                    print("👿👿👿👿\(comments)")
+                case .failure(let error):
+                    print("Failed to fetch comments: \(error)")
+                }
+            }
+        }
+    }
 }

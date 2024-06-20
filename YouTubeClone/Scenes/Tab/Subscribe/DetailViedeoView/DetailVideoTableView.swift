@@ -94,18 +94,13 @@ final class DetailVideoTableView: UITableView {
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
         
         let videoViewController = DetailVideoViewController()
-        videoViewController.videoID = item.id
         videoViewController.videoURL = url
-        videoViewController.videoTitle = item.snippet.title
-        videoViewController.videoPublishedAt = item.snippet.publishedAt.toDate()?.timeAgoSinceDate()
-        videoViewController.viewCount = Int(item.statistics.viewCount)?.formattedViewCount()
-        videoViewController.channelTitle = item.snippet.channelTitle
-        videoViewController.commentCount = item.statistics.commentCount
+        videoViewController.item = item  // Item 객체를 전달
+        videoViewController.tableView.parentViewController = parentViewController
         
         // 채널이미지, 채널구독자 수
         if let channelItem = channelItems[item.snippet.channelId] {
-            videoViewController.channelImageURL = channelItem.snippet.thumbnails.high.url
-            videoViewController.subscriberCount = channelItem.statistics.subscriberCount
+            videoViewController.channelItem = channelItem  // ChannelItem 객체를 전달
         }
         
         videoViewController.modalPresentationStyle = .overFullScreen

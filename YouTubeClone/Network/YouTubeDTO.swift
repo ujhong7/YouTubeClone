@@ -57,7 +57,7 @@ struct Statistics: Codable {
     /// 조회수
     let viewCount: String
     /// 좋아요 수
-    let likeCount: String
+    let likeCount: String?
     /// 댓글 수
     let commentCount: String?
 }

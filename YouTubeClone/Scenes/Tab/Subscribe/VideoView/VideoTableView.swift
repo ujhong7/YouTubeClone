@@ -7,7 +7,7 @@
 
 import UIKit
 
-// MARK: - 영상에 대한 전반적인 정보를 담고 있는 테이블뷰
+/// 영상에 대한 전반적인 정보를 담고 있는 테이블뷰
 final class VideoTableView: UITableView {
     
     // MARK: - Properties
@@ -17,11 +17,12 @@ final class VideoTableView: UITableView {
     /// 유튜브 API 데이터
     private var items: [Item] = []
     
+    ///
     private var channelItems: [String: ChannelItem] = [:]
-
+    
     /// present 애니메이션 설정해주기 위한 프로퍼티
     var isPresentAnimation: Bool = true
-
+    
     // MARK: - Init
     
     init() {
@@ -43,11 +44,6 @@ final class VideoTableView: UITableView {
         delegate = self
     }
     
-    // ☀️ private 프로퍼티를 다른곳에서 사용하는 방법...메서드를 만들자
-    //    func getVideoItems() -> [Item] {
-    //        return items
-    //    }
-    
     func presentVideoViewController(with item: Item) {
         
         let url = URL(string: "https://www.youtube.com/embed/" + item.id)!
@@ -55,19 +51,13 @@ final class VideoTableView: UITableView {
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
         
         let videoViewController = DetailVideoViewController()
-        videoViewController.tableView.parentViewController = parentViewController
-        videoViewController.videoID = item.id
         videoViewController.videoURL = url
-        videoViewController.videoTitle = item.snippet.title
-        videoViewController.videoPublishedAt = item.snippet.publishedAt.toDate()?.timeAgoSinceDate()
-        videoViewController.viewCount = Int(item.statistics.viewCount)?.formattedViewCount()
-        videoViewController.channelTitle = item.snippet.channelTitle
-        videoViewController.commentCount = item.statistics.commentCount
+        videoViewController.item = item  // Item 객체를 전달
+        videoViewController.tableView.parentViewController = parentViewController
         
         // 채널이미지, 채널구독자 수
         if let channelItem = channelItems[item.snippet.channelId] {
-            videoViewController.channelImageURL = channelItem.snippet.thumbnails.high.url
-            videoViewController.subscriberCount = channelItem.statistics.subscriberCount
+            videoViewController.channelItem = channelItem  // ChannelItem 객체를 전달
         }
         
         videoViewController.modalPresentationStyle = .overFullScreen
