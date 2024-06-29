@@ -147,33 +147,6 @@ extension SubscribeViewController {
     
 }
 
-// MARK: - 화면전환
-
-//extension SubscribeViewController {
-//    
-//    private func presentVideoViewController(with item: Item) {
-//        let url = URL(string: "https://www.youtube.com/embed/" + item.id)!
-//        
-//        print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
-//        let videoViewController = DetailVideoViewController()
-//        
-//
-//        // ☀️ 이런식으로 Item을 다 받아와야 확장성있게 데이터를 사용할 수 있음...
-////        let videoItems = videoTableView.getVideoItems()
-////        videoViewController.currentItem = videoItems
-//        
-//        videoViewController.videoURL = url
-//        videoViewController.videoTitle = item.snippet.title
-//        videoViewController.videoPublishedAt = item.snippet.publishedAt
-//        // videoViewController.videoDescription = video.description
-//        
-//        videoViewController.modalPresentationStyle = .overFullScreen
-//        videoViewController.modalTransitionStyle = .coverVertical
-//        present(videoViewController, animated: true, completion: nil)
-//    }
-//    
-//}
-
 // MARK: - UIScrollViewDelegate
 
 extension SubscribeViewController: UIScrollViewDelegate {
