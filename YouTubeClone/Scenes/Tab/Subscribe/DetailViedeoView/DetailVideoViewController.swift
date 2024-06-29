@@ -144,9 +144,9 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
         guard let item = item else { return }
         let videoTitle = item.snippet.title
         let videoPublishedAt = item.snippet.publishedAt.toDate()?.timeAgoSinceDate()
-        let viewCount = Int(item.statistics.viewCount)?.formattedViewCount()
+        let viewCount = Int((item.statistics?.viewCount)!)?.formattedViewCount()
         let channelTitle = item.snippet.channelTitle
-        let commentCount = item.statistics.commentCount
+        let commentCount = item.statistics?.commentCount
         
         titleLabel.text = videoTitle
         subtitleLabel.text = "조회수 \(viewCount!)  \(videoPublishedAt!)"
@@ -213,7 +213,7 @@ extension DetailVideoViewController {
         commentDetailView = CommentDetailView()
         
         if let commentDetailView = commentDetailView {
-            commentDetailView.requestCommentsAPI(videoID: videoID)
+            commentDetailView.requestCommentsAPI(videoID: videoID.videoId)
             view.addSubview(commentDetailView)
             commentDetailView.translatesAutoresizingMaskIntoConstraints = false
             
@@ -367,7 +367,7 @@ extension DetailVideoViewController {
             return
         }
         
-        APIManager.shared.requestCommentsAPIData(videoId: videoID, maxResults: 1) { [weak self] result in
+        APIManager.shared.requestCommentsAPIData(videoId: videoID.videoId, maxResults: 1) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let comments):

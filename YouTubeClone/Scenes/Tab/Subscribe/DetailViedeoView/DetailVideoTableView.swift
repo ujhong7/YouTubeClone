@@ -89,11 +89,12 @@ final class DetailVideoTableView: UITableView {
     
     private func presentVideoViewController(with item: Item) {
         print(#function)
-        let url = URL(string: "https://www.youtube.com/embed/" + item.id)!
+        let url = URL(string: "https://www.youtube.com/embed/" + item.id.videoId)!
         
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
         
         let videoViewController = DetailVideoViewController()
+
         videoViewController.videoURL = url
         videoViewController.item = item  // Item 객체를 전달
         videoViewController.tableView.parentViewController = parentViewController
