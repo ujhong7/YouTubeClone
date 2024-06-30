@@ -13,6 +13,8 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
     
     // MARK: - Properties
     
+    private var detailViewModel: DetailViewModel?
+    
     var item: Item?
     
     var channelItem: ChannelItem?
@@ -122,12 +124,18 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        
+        detailViewModel = DetailViewModel(item: item,
+                                          channelItem: channelItem,
+                                          videoURL: videoURL)
+        detailViewModel?.requestCommentsAPI(item: item)
+        
         setupVideoPlayer()
         setupAutoLayout()
         setupCollectionView()
         setupTapGesture()
         setupPanGesture()
-        requestCommentsAPI()
+
         setupData()
         
         // TODO: - tableView API 호춣
@@ -141,42 +149,24 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
     // MARK: - Methods
     
     private func setupData() {
-        guard let item = item else { return }
-        let videoTitle = item.snippet.title
-        let videoPublishedAt = item.snippet.publishedAt.toDate()?.timeAgoSinceDate()
-        let viewCount = Int((item.statistics?.viewCount)!)?.formattedViewCount()
-        let channelTitle = item.snippet.channelTitle
-        let commentCount = item.statistics?.commentCount
         
-        titleLabel.text = videoTitle
-        subtitleLabel.text = "조회수 \(viewCount!)  \(videoPublishedAt!)"
-        channelTitleLabel.text = channelTitle
-        subscriberCountLabel.text = Int(channelItem?.statistics.subscriberCount ?? "0")?.formattedSubscriberCount()
+        guard let detailViewModel = detailViewModel else { return }
+
+        titleLabel.text = detailViewModel.title
+        subtitleLabel.text = "조회수 \(detailViewModel.viewCount!)  \(detailViewModel.videoPulished!)"
+        channelTitleLabel.text = detailViewModel.channelTitle
+        subscriberCountLabel.text = detailViewModel.subscriberCount
         
-        if let channelImageURL = channelItem?.snippet.thumbnails.high.url, let url = URL(string: channelImageURL) {
-            setImage(for: profileImageButton, from: url)
-        }
-    }
-    
-    private func setImage(for button: UIButton, from url: URL) {
-        DispatchQueue.global().async {
-            if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    button.setImage(image, for: .normal)
-                }
-            } else {
-                DispatchQueue.main.async {
-                    // Handle error case here if needed
-                }
-            }
+        if let channelImageURL = detailViewModel.channelImageUrl {
+            detailViewModel.setImage(for: profileImageButton)
         }
     }
     
     func setupVideoPlayer() {
-        guard let videoURL = videoURL else { return }
+        guard let videoURL = detailViewModel?.videoURL else { return }
         let request = URLRequest(url: videoURL)
         webView.load(request)
-        webView.uiDelegate = self
+        self.webView.uiDelegate = self
     }
     
     private func setupCollectionView() {
@@ -205,7 +195,7 @@ extension DetailVideoViewController {
     @objc private func handleCommentViewTap() {
         print(#function)
         // videoID가 존재하는지 확인하고 안전하게 언래핑
-        guard let videoID = item?.id else {
+        guard let videoID = detailViewModel?.item?.id else {
             print("Video ID가 없습니다.")
             return
         }

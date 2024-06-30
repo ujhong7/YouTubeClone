@@ -45,6 +45,7 @@
 		1DE69EF92BB187590001CAB4 /* LoginSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE69EF82BB187590001CAB4 /* LoginSuccessViewController.swift */; };
 		1DE69EFB2BB19E5A0001CAB4 /* LoginInfoStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE69EFA2BB19E5A0001CAB4 /* LoginInfoStackView.swift */; };
 		BE788E1F2C1858C0009D4185 /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE788E1E2C1858C0009D4185 /* String+.swift */; };
+		BEB9CB9D2C2FAA730072E5CB /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB9CB9C2C2FAA730072E5CB /* DetailViewModel.swift */; };
 		BEE3032F2C1E871B00257E9F /* UIImageView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE3032E2C1E871B00257E9F /* UIImageView+.swift */; };
 		BEE303312C1E872700257E9F /* Date+.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE303302C1E872700257E9F /* Date+.swift */; };
 		BEE303332C1E872F00257E9F /* Int+.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE303322C1E872F00257E9F /* Int+.swift */; };
@@ -109,6 +110,7 @@
 		B5262E7EA0486ABF41178948 /* Pods-YouTubeClone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YouTubeClone.release.xcconfig"; path = "Target Support Files/Pods-YouTubeClone/Pods-YouTubeClone.release.xcconfig"; sourceTree = "<group>"; };
 		BE788E1A2C171F62009D4185 /* UIImageView+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+.swift"; sourceTree = "<group>"; };
 		BE788E1E2C1858C0009D4185 /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
+		BEB9CB9C2C2FAA730072E5CB /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
 		BEE3032E2C1E871B00257E9F /* UIImageView+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+.swift"; sourceTree = "<group>"; };
 		BEE303302C1E872700257E9F /* Date+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+.swift"; sourceTree = "<group>"; };
 		BEE303322C1E872F00257E9F /* Int+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+.swift"; sourceTree = "<group>"; };
@@ -312,6 +314,7 @@
 				1DAEB71D2C1CA92E00BB6843 /* DetailVideoTableView.swift */,
 				1DAEB70B2C14329500BB6843 /* CommentDetailView.swift */,
 				1DAEB70F2C16ED8D00BB6843 /* CommentTableViewCell.swift */,
+				BEB9CB9C2C2FAA730072E5CB /* DetailViewModel.swift */,
 			);
 			path = DetailViedeoView;
 			sourceTree = "<group>";
@@ -501,6 +504,7 @@
 				1DE69EE32BB185750001CAB4 /* SceneDelegate.swift in Sources */,
 				1D73D3A72BF547AE00A9B782 /* Video.swift in Sources */,
 				1DB508912BCD4A190096A747 /* HomeViewController.swift in Sources */,
+				BEB9CB9D2C2FAA730072E5CB /* DetailViewModel.swift in Sources */,
 				1D73D3992BF464AB00A9B782 /* VideoTableViewCell.swift in Sources */,
 				1D73D3A92BF547B300A9B782 /* Channel.swift in Sources */,
 				1DD0F7C92C09601900C5AB80 /* YouTubeDTO.swift in Sources */,
