@@ -5,7 +5,6 @@
 //  Created by Kant on 6/29/24.
 //
 
-import Foundation
 import UIKit
 
 final class DetailViewModel {
@@ -28,22 +27,30 @@ final class DetailViewModel {
     private(set) var channelImage: UIImage?
     private(set) var comment: String?
     
+    // 댓글 데이터가 업데이트되었을 때 호출될 클로저
+    var didUpdateComments: (() -> Void)?
+    
     init(item: Item?, channelItem: ChannelItem?, videoURL: URL?) {
         self.item = item
         self.channelItem = channelItem
         self.videoURL = videoURL
         
+        setupData()
+    }
+    
+    private func setupData() {
         guard let item = item else { return }
         
         title = item.snippet.title
         videoPulished = item.snippet.publishedAt.toDate()?.timeAgoSinceDate()
-        viewCount = Int((item.statistics?.viewCount)!)?.formattedViewCount()
+        viewCount = Int(item.statistics?.viewCount ?? "0")?.formattedViewCount()
         channelTitle = item.snippet.channelTitle
         commentCount = item.statistics?.commentCount
-
-        if let url = channelItem?.snippet.thumbnails.high.url, let url = URL(string: url) {
+        
+        if let urlString = channelItem?.snippet.thumbnails.high.url, let url = URL(string: urlString) {
             channelImageUrl = url
         }
+        
     }
     
     func requestCommentsAPI(item: Item?) {
@@ -60,6 +67,7 @@ final class DetailViewModel {
                     if let firstComment = comments.first {
                         self?.comment = firstComment.snippet.topLevelComment.snippet.textOriginal
                     }
+                    self?.didUpdateComments?()
                     print("👿👿👿👿\(comments)")
                 case .failure(let error):
                     print("Failed to fetch comments: \(error)")

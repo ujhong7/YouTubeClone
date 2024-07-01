@@ -135,8 +135,8 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
         setupCollectionView()
         setupTapGesture()
         setupPanGesture()
-
-        setupData()
+        
+        setupBindings()
         
         // TODO: - tableView API 호춣
         tableView.requestInVideoVC()
@@ -148,18 +148,25 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
     
     // MARK: - Methods
     
-    private func setupData() {
+    private func setupBindings() {
         
         guard let detailViewModel = detailViewModel else { return }
-
+        
         titleLabel.text = detailViewModel.title
         subtitleLabel.text = "조회수 \(detailViewModel.viewCount!)  \(detailViewModel.videoPulished!)"
         channelTitleLabel.text = detailViewModel.channelTitle
         subscriberCountLabel.text = detailViewModel.subscriberCount
+        commentCountLabel.text = detailViewModel.commentCount
         
         if let channelImageURL = detailViewModel.channelImageUrl {
             detailViewModel.setImage(for: profileImageButton)
         }
+        
+        detailViewModel.didUpdateComments = { [weak self] in
+            guard let self = self, let detailViewModel = self.detailViewModel else { return }
+            self.commentLabel.text = detailViewModel.comment
+        }
+        
     }
     
     func setupVideoPlayer() {
@@ -192,34 +199,34 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
 extension DetailVideoViewController {
     
     /// 댓글뷰 탭했을때 댓글화면 올라오기
-    @objc private func handleCommentViewTap() {
-        print(#function)
-        // videoID가 존재하는지 확인하고 안전하게 언래핑
-        guard let videoID = detailViewModel?.item?.id else {
-            print("Video ID가 없습니다.")
-            return
-        }
-        
-        commentDetailView = CommentDetailView()
-        
-        if let commentDetailView = commentDetailView {
-            commentDetailView.requestCommentsAPI(videoID: videoID.videoId)
-            view.addSubview(commentDetailView)
-            commentDetailView.translatesAutoresizingMaskIntoConstraints = false
-            
-            NSLayoutConstraint.activate([
-                commentDetailView.topAnchor.constraint(equalTo: webView.bottomAnchor),
-                commentDetailView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-                commentDetailView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                commentDetailView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-            ])
-            
-            commentDetailView.transform = CGAffineTransform(translationX: 0, y: 300)
-            UIView.animate(withDuration: 0.3) {
-                commentDetailView.transform = .identity
-            }
-        }
-    }
+      @objc private func handleCommentViewTap() {
+          print(#function)
+          // videoID가 존재하는지 확인하고 안전하게 언래핑
+          guard let videoID = detailViewModel?.item?.id else {
+              print("Video ID가 없습니다.")
+              return
+          }
+          
+          // CommentDetailView 초기화
+          let commentDetailView = CommentDetailView()
+          view.addSubview(commentDetailView)
+          commentDetailView.translatesAutoresizingMaskIntoConstraints = false
+          
+          NSLayoutConstraint.activate([
+              commentDetailView.topAnchor.constraint(equalTo: webView.bottomAnchor),
+              commentDetailView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+              commentDetailView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+              commentDetailView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+          ])
+          
+          // CommentDetailViewModel을 통해 댓글 데이터 요청
+          commentDetailView.fetchComments(for: videoID.videoId)
+          
+          commentDetailView.transform = CGAffineTransform(translationX: 0, y: 300)
+          UIView.animate(withDuration: 0.3) {
+              commentDetailView.transform = .identity
+          }
+      }
     
     @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
         let translation = gesture.translation(in: view)
@@ -345,31 +352,6 @@ extension DetailVideoViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y < 0 {
             scrollView.contentOffset.y = 0
-        }
-    }
-}
-
-extension DetailVideoViewController {
-    
-    func requestCommentsAPI() {
-        guard let videoID = item?.id else {
-            print("Video ID가 없습니다.")
-            return
-        }
-        
-        APIManager.shared.requestCommentsAPIData(videoId: videoID.videoId, maxResults: 1) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let comments):
-                    self?.comments = comments
-                    if let firstComment = comments.first {
-                        self?.commentLabel.text = firstComment.snippet.topLevelComment.snippet.textOriginal
-                    }
-                    print("👿👿👿👿\(comments)")
-                case .failure(let error):
-                    print("Failed to fetch comments: \(error)")
-                }
-            }
         }
     }
 }

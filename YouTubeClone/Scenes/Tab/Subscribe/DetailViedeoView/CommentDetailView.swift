@@ -1,17 +1,10 @@
-//
-//  CommentDetailView.swift
-//  YouTubeClone
-//
-//  Created by yujaehong on 6/8/24.
-//
-
 import UIKit
 
 final class CommentDetailView: UIView {
     
     // MARK: - Properties
     
-    private var comments: [CommentThread] = []
+    private var viewModel: CommentDetailViewModel!
     
     private let label: UILabel = {
         let label = UILabel()
@@ -24,34 +17,42 @@ final class CommentDetailView: UIView {
         let button = UIButton(type: .system)
         let image = UIImage(systemName: "xmark")
         button.setImage(image, for: .normal)
-        button.tintColor = .black  // 버튼 이미지 색상을 변경할 수 있습니다.
+        button.tintColor = .black
         button.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
         return button
     }()
     
     private var commentTableView: UITableView = {
-        let tableView =  UITableView(frame: .zero)
+        let tableView = UITableView(frame: .zero)
         return tableView
     }()
     
     private var handleView: UIView = {
-        let view =  UIView()
+        let view = UIView()
         view.backgroundColor = .lightGray
         view.layer.cornerRadius = 3
         return view
     }()
     
     private let activityIndicator: UIActivityIndicatorView = {
-           let indicator = UIActivityIndicatorView(style: .large)
-           indicator.hidesWhenStopped = true
-           return indicator
-       }()
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
     
-    // MARK: - LifeCycle
+    // MARK: - Initialization
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        print("CommentDetailView initialized")
+        
+        viewModel = CommentDetailViewModel()
+        viewModel.didUpdateComments = { [weak self] in
+            DispatchQueue.main.async {
+                self?.commentTableView.reloadData()
+                self?.activityIndicator.stopAnimating()
+            }
+        }
+        
         setupView()
         setupTableView()
         setupAutoLayout()
@@ -64,7 +65,7 @@ final class CommentDetailView: UIView {
     
     private func setupView() {
         backgroundColor = .white
-        layer.cornerRadius = 15 // 원하는 반경으로 설정하세요.
+        layer.cornerRadius = 15
         layer.masksToBounds = true
     }
     
@@ -75,15 +76,10 @@ final class CommentDetailView: UIView {
     }
     
     private func setupAutoLayout() {
-        addSubview(handleView)
-        addSubview(label)
-        addSubview(closeButton)
-        addSubview(commentTableView)
+        let views = [handleView, label, closeButton, commentTableView, activityIndicator]
         
-        handleView.translatesAutoresizingMaskIntoConstraints = false
-        label.translatesAutoresizingMaskIntoConstraints = false
-        commentTableView.translatesAutoresizingMaskIntoConstraints = false
-        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        views.forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+        views.forEach(addSubview)
         
         NSLayoutConstraint.activate([
             handleView.topAnchor.constraint(equalTo: self.topAnchor, constant: 8),
@@ -102,9 +98,11 @@ final class CommentDetailView: UIView {
             commentTableView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 10),
             commentTableView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             commentTableView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            commentTableView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+            commentTableView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            
+            activityIndicator.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: self.centerYAnchor)
         ])
-        
     }
     
     private func setupPanGesture() {
@@ -141,38 +139,18 @@ final class CommentDetailView: UIView {
         }
     }
     
-}
-
-// MARK: - Networking
-
-extension CommentDetailView {
-    
-    func requestCommentsAPI(videoID: String) {
-        print(#function)
-        
-        print("Fetching comments for videoID: \(videoID)")
+    // 댓글 데이터를 요청하고 뷰모델을 통해 데이터 업데이트
+    func fetchComments(for videoID: String) {
         activityIndicator.startAnimating()
-        APIManager.shared.requestCommentsAPIData(videoId: videoID, maxResults: 10) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.activityIndicator.stopAnimating()
-                switch result {
-                case .success(let comments):
-                    self?.comments = comments
-                    self?.commentTableView.reloadData()
-                case .failure(let error):
-                    print("Failed to fetch comments: \(error)")
-                }
-            }
-        }
+        viewModel.fetchComments(for: videoID)
     }
-    
 }
 
 // MARK: - UITableViewDataSource
 
 extension CommentDetailView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return comments.count
+        return viewModel.numberOfComments()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -180,8 +158,9 @@ extension CommentDetailView: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        let comment = comments[indexPath.row]
-        cell.configure(comments: comment)
+        if let comment = viewModel.comment(at: indexPath.row) {
+            cell.configure(comments: comment)
+        }
         
         return cell
     }
@@ -194,14 +173,3 @@ extension CommentDetailView: UITableViewDelegate {
         return 100
     }
 }
-
-
-//// MARK: - UIScrollViewDelegate
-//
-//extension CommentDetailView: UIScrollViewDelegate {
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        if scrollView.contentOffset.y < 0 {
-//            scrollView.contentOffset.y = 0
-//        }
-//    }
-//}
