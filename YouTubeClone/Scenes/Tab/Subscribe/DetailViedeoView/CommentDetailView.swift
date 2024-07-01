@@ -4,7 +4,8 @@ final class CommentDetailView: UIView {
     
     // MARK: - Properties
     
-    private var viewModel: CommentDetailViewModel!
+    /// init 시점에 필요한 파라미터가 없으므로 옵셔널 or 강제언래핑이 아닌 객체를 선언하고 시작
+    private var viewModel: CommentDetailViewModel = CommentDetailViewModel()
     
     private let label: UILabel = {
         let label = UILabel()
@@ -45,7 +46,6 @@ final class CommentDetailView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        viewModel = CommentDetailViewModel()
         viewModel.didUpdateComments = { [weak self] in
             DispatchQueue.main.async {
                 self?.commentTableView.reloadData()
@@ -73,6 +73,18 @@ final class CommentDetailView: UIView {
         commentTableView.dataSource = self
         commentTableView.delegate = self
         commentTableView.register(CommentTableViewCell.self, forCellReuseIdentifier: "CommentCell")
+    }
+    
+    /// DetailVideoViewController 위에 CommentDetailView 를 올리기 위한 제약조건 함수
+    func setupConstraints(relativeTo view: UIView, webView: UIView) {
+        self.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            self.topAnchor.constraint(equalTo: webView.bottomAnchor),
+            self.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            self.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            self.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
     }
     
     private func setupAutoLayout() {

@@ -199,34 +199,27 @@ class DetailVideoViewController: UIViewController, WKUIDelegate, UIGestureRecogn
 extension DetailVideoViewController {
     
     /// 댓글뷰 탭했을때 댓글화면 올라오기
-      @objc private func handleCommentViewTap() {
-          print(#function)
-          // videoID가 존재하는지 확인하고 안전하게 언래핑
-          guard let videoID = detailViewModel?.item?.id else {
-              print("Video ID가 없습니다.")
-              return
-          }
-          
-          // CommentDetailView 초기화
-          let commentDetailView = CommentDetailView()
-          view.addSubview(commentDetailView)
-          commentDetailView.translatesAutoresizingMaskIntoConstraints = false
-          
-          NSLayoutConstraint.activate([
-              commentDetailView.topAnchor.constraint(equalTo: webView.bottomAnchor),
-              commentDetailView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-              commentDetailView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-              commentDetailView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-          ])
-          
-          // CommentDetailViewModel을 통해 댓글 데이터 요청
-          commentDetailView.fetchComments(for: videoID.videoId)
-          
-          commentDetailView.transform = CGAffineTransform(translationX: 0, y: 300)
-          UIView.animate(withDuration: 0.3) {
-              commentDetailView.transform = .identity
-          }
-      }
+    @objc private func handleCommentViewTap() {
+        print(#function)
+        // videoID가 존재하는지 확인하고 안전하게 언래핑
+        guard let videoID = detailViewModel?.item?.id else {
+            print("Video ID가 없습니다.")
+            return
+        }
+        
+        // CommentDetailView 초기화
+        let commentDetailView = CommentDetailView()
+        view.addSubview(commentDetailView)
+        commentDetailView.setupConstraints(relativeTo: view, webView: webView)
+        
+        // CommentDetailViewModel을 통해 댓글 데이터 요청
+        commentDetailView.fetchComments(for: videoID.videoId)
+        
+        commentDetailView.transform = CGAffineTransform(translationX: 0, y: 300)
+        UIView.animate(withDuration: 0.3) {
+            commentDetailView.transform = .identity
+        }
+    }
     
     @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
         let translation = gesture.translation(in: view)
