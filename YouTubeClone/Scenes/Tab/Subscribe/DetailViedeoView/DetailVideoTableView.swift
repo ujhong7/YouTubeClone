@@ -93,11 +93,15 @@ final class DetailVideoTableView: UITableView {
         
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
         
+        
+        // TODO: - 이곳도 동일한 구조로 변경이 필요함
         let videoViewController = DetailVideoViewController()
 
         videoViewController.videoURL = url
         videoViewController.item = item  // Item 객체를 전달
-        videoViewController.tableView.parentViewController = parentViewController
+        //videoViewController.detailVideoView.tableView.parentViewController = parentViewController
+        //videoViewController.detailVideoView.tableView.parentViewController = parentViewController
+
         
         // 채널이미지, 채널구독자 수
         if let channelItem = channelItems[item.snippet.channelId] {

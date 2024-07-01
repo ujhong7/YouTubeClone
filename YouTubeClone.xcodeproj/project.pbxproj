@@ -10,6 +10,7 @@
 		1D3CAADC2BBB13F000D20406 /* UILabel+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D3CAADB2BBB13F000D20406 /* UILabel+.swift */; };
 		1D3CAADE2BBB166300D20406 /* LoginTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D3CAADD2BBB166300D20406 /* LoginTextField.swift */; };
 		1D3CAAE12BBB1B8400D20406 /* UIColor+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D3CAAE02BBB1B8400D20406 /* UIColor+.swift */; };
+		1D4CFE0E2C3162E100DBA7C4 /* DetailVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4CFE0D2C3162E100DBA7C4 /* DetailVideoView.swift */; };
 		1D73D3992BF464AB00A9B782 /* VideoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D73D3982BF464AB00A9B782 /* VideoTableViewCell.swift */; };
 		1D73D39C2BF464F100A9B782 /* ChannelCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D73D39B2BF464F100A9B782 /* ChannelCollectionViewCell.swift */; };
 		1D73D39E2BF464F700A9B782 /* TabButtonCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D73D39D2BF464F700A9B782 /* TabButtonCollectionViewCell.swift */; };
@@ -70,6 +71,7 @@
 		1D3CAADB2BBB13F000D20406 /* UILabel+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+.swift"; sourceTree = "<group>"; };
 		1D3CAADD2BBB166300D20406 /* LoginTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTextField.swift; sourceTree = "<group>"; };
 		1D3CAAE02BBB1B8400D20406 /* UIColor+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+.swift"; sourceTree = "<group>"; };
+		1D4CFE0D2C3162E100DBA7C4 /* DetailVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailVideoView.swift; sourceTree = "<group>"; };
 		1D73D3982BF464AB00A9B782 /* VideoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoTableViewCell.swift; sourceTree = "<group>"; };
 		1D73D39B2BF464F100A9B782 /* ChannelCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelCollectionViewCell.swift; sourceTree = "<group>"; };
 		1D73D39D2BF464F700A9B782 /* TabButtonCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabButtonCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -311,10 +313,11 @@
 			isa = PBXGroup;
 			children = (
 				1DD0F7CA2C0A26D500C5AB80 /* DetailVideoViewController.swift */,
+				1D4CFE0D2C3162E100DBA7C4 /* DetailVideoView.swift */,
+				BEB9CB9C2C2FAA730072E5CB /* DetailViewModel.swift */,
 				1DAEB71D2C1CA92E00BB6843 /* DetailVideoTableView.swift */,
 				1DAEB70B2C14329500BB6843 /* CommentDetailView.swift */,
 				1DAEB70F2C16ED8D00BB6843 /* CommentTableViewCell.swift */,
-				BEB9CB9C2C2FAA730072E5CB /* DetailViewModel.swift */,
 			);
 			path = DetailViedeoView;
 			sourceTree = "<group>";
@@ -511,6 +514,7 @@
 				1D73D39C2BF464F100A9B782 /* ChannelCollectionViewCell.swift in Sources */,
 				1D73D3A22BF4653800A9B782 /* TabButtonCollectionView.swift in Sources */,
 				1DD0F7C72C095FD000C5AB80 /* APIManager.swift in Sources */,
+				1D4CFE0E2C3162E100DBA7C4 /* DetailVideoView.swift in Sources */,
 				1DD0F7CD2C0A527A00C5AB80 /* ChannelDTO.swift in Sources */,
 				1D8237092C032B5D00D83135 /* Video2.swift in Sources */,
 				1DAEB70C2C14329500BB6843 /* CommentDetailView.swift in Sources */,
