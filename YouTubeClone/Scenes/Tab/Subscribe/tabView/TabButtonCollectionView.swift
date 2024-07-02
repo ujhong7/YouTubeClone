@@ -20,10 +20,9 @@ final class TabButtonCollectionView: UICollectionView {
     
     private var tabTitles = [""]
     
-    private let subscribeTabTitles = ["전체", "오늘", "동영상", "Shorts",
-                             "이어서 시청하기", "라이브", "게시물"]
+    private let subscribeTabTitles = ["전체", "오늘", "동영상", "Shorts", "이어서 시청하기", "라이브", "게시물"]
     
-    private let detailViewControllerTabTitles = ["좋아요","공유","리믹스","오프라인 저장","클립","저장","신고"]
+    private let detailViewControllerTabTitles = ["좋아요", "공유" , "리믹스", "오프라인 저장", "클립", "저장", "신고"]
     
     private let tabPosition: TabPosition = .none
     

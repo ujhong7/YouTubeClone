@@ -315,8 +315,6 @@
 				1DD0F7CA2C0A26D500C5AB80 /* DetailVideoViewController.swift */,
 				1D4CFE0D2C3162E100DBA7C4 /* DetailVideoView.swift */,
 				BEB9CB9C2C2FAA730072E5CB /* DetailViewModel.swift */,
-				1DAEB71D2C1CA92E00BB6843 /* DetailVideoTableView.swift */,
-				1DAEB70B2C14329500BB6843 /* CommentDetailView.swift */,
 				1DAEB70B2C14329500BB6843 /* CommentDetailView.swift */,
 				1D4CFE192C3261B100DBA7C4 /* CommentDetailViewModel.swift */,
 				1DAEB70F2C16ED8D00BB6843 /* CommentTableViewCell.swift */,

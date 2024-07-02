@@ -226,18 +226,8 @@ extension SubscribeViewController {
         print("⭐️⭐️⭐️⭐️⭐️\(url)⭐️⭐️⭐️⭐️")
         let videoViewController = DetailVideoViewController()
         
-
-        // ☀️ 이런식으로 Item을 다 받아와야 확장성있게 데이터를 사용할 수 있음...
-//        let videoItems = videoTableView.getVideoItems()
-//        videoViewController.currentItem = videoItems
-        
-//        videoViewController.videoURL = url
-//        videoViewController.videoTitle = item.snippet.title
-//        videoViewController.videoPublishedAt = item.snippet.publishedAt
-        
         videoViewController.videoURL = url
-        videoViewController.item = item  // Item 객체를 전달
-        // videoViewController.videoDescription = video.description
+        videoViewController.item = item
         
         videoViewController.modalPresentationStyle = .overFullScreen
         videoViewController.modalTransitionStyle = .coverVertical
@@ -246,7 +236,6 @@ extension SubscribeViewController {
     
 }
 
-//>>>>>>> development
 // MARK: - UIScrollViewDelegate
 
 extension SubscribeViewController: UIScrollViewDelegate {
