@@ -18,9 +18,6 @@ final class SubscribeViewController: UIViewController {
     
     // MARK: - Properties
     
-    private let tabTitles = ["전체", "오늘", "동영상", "Shorts",
-                             "이어서 시청하기", "라이브", "게시물"]
-    
     private var channelCollectionView: ChannelCollectionView = {
         let view = ChannelCollectionView()
         view.translatesAutoresizingMaskIntoConstraints = false

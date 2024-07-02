@@ -8,7 +8,7 @@ import UIKit
 import AVKit
 import WebKit
 
-class DetailVideoViewController: UIViewController {
+class DetailVideoViewController: UIViewController, WKUIDelegate {
     
     // MARK: - Properties
     
@@ -62,9 +62,10 @@ class DetailVideoViewController: UIViewController {
         detailViewModel?.requestCommentsAPI(item: item)
         
         setupVideoPlayer()
-        setupData()
-        
+        setupBindings()
         detailVideoView?.tableView.requestInVideoVC()
+        
+        detailVideoView?.delegate = self
     }
     
     deinit {
@@ -73,8 +74,7 @@ class DetailVideoViewController: UIViewController {
     
     // MARK: - Methods
     
-    private func setupData() {
-        
+    private func setupBindings() {
         guard let detailViewModel = detailViewModel,
               let detailVideoView = detailVideoView else { return }
         
@@ -82,10 +82,17 @@ class DetailVideoViewController: UIViewController {
         detailVideoView.subtitleLabel.text = "조회수 \(detailViewModel.viewCount!)  \(detailViewModel.videoPulished!)"
         detailVideoView.channelTitleLabel.text = detailViewModel.channelTitle
         detailVideoView.subscriberCountLabel.text = detailViewModel.subscriberCount
-        
+        detailVideoView.commentCountLabel.text = detailViewModel.commentCount
+
         if let channelImageURL = detailViewModel.channelImageUrl {
             detailViewModel.setImage(for: detailVideoView.profileImageButton)
         }
+        
+        detailViewModel.didUpdateComments = { [weak self] in
+            guard let self = self, let detailViewModel = self.detailViewModel else { return }
+            detailVideoView.commentLabel.text = detailViewModel.comment
+        }
+        
     }
     
     func setupVideoPlayer() {
@@ -97,41 +104,54 @@ class DetailVideoViewController: UIViewController {
     }
 }
 
-// MARK: - WKUIDelegate
-
-extension DetailVideoViewController: WKUIDelegate {}
-
-// MARK: - UIScrollViewDelegate
-
-//extension DetailVideoViewController: UIScrollViewDelegate {
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        if scrollView.contentOffset.y < 0 {
-//            scrollView.contentOffset.y = 0
-//        }
-//    }
-//}
-
-//extension DetailVideoViewController {
-//    
-//    func requestCommentsAPI() {
-//        guard let videoID = item?.id else {
-//            print("Video ID가 없습니다.")
-//            return
-//        }
-//        
-//        APIManager.shared.requestCommentsAPIData(videoId: videoID.videoId, maxResults: 1) { [weak self] result in
-//            DispatchQueue.main.async {
-//                switch result {
-//                case .success(let comments):
-//                    self?.comments = comments
-//                    if let firstComment = comments.first {
-//                        self?.detailVideoView?.commentLabel.text = firstComment.snippet.topLevelComment.snippet.textOriginal
-//                    }
-//                    print("👿👿👿👿\(comments)")
-//                case .failure(let error):
-//                    print("Failed to fetch comments: \(error)")
-//                }
-//            }
-//        }
-//    }
-//}
+extension DetailVideoViewController: DetailVideoViewDelegate {
+    
+    func handleCommentViewTap() {
+        print("Comment view tapped")
+        // 여기에 실제 코멘트 뷰 탭 핸들러 로직 추가
+        print(#function)
+        // videoID가 존재하는지 확인하고 안전하게 언래핑
+        guard let videoID = detailViewModel?.item?.id else {
+            print("Video ID가 없습니다.")
+            return
+        }
+        
+        // CommentDetailView 초기화
+        let commentDetailView = CommentDetailView()
+        view.addSubview(commentDetailView)
+        commentDetailView.setupConstraints(relativeTo: view, webView: detailVideoView!.webView)
+        
+        // CommentDetailViewModel을 통해 댓글 데이터 요청
+        commentDetailView.fetchComments(for: videoID.videoId)
+        
+        commentDetailView.transform = CGAffineTransform(translationX: 0, y: 300)
+        UIView.animate(withDuration: 0.3) {
+            commentDetailView.transform = .identity
+        }
+    }
+    
+    func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
+        // 여기에 실제 팬 제스처 핸들러 로직 추가
+        // Pan gesture handling logic
+        let translation = gesture.translation(in: view)
+        let velocity = gesture.velocity(in: view)
+        
+        switch gesture.state {
+        case .changed:
+            if translation.y > 0 {
+                view.transform = CGAffineTransform(translationX: 0, y: translation.y)
+            }
+        case .ended:
+            if translation.y > 100 || velocity.y > 500 {
+                dismiss(animated: true, completion: nil)
+            } else {
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.view.transform = .identity
+                })
+            }
+        default:
+            break
+            
+        }
+    }
+}

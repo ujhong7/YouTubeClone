@@ -11,6 +11,7 @@
 		1D3CAADE2BBB166300D20406 /* LoginTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D3CAADD2BBB166300D20406 /* LoginTextField.swift */; };
 		1D3CAAE12BBB1B8400D20406 /* UIColor+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D3CAAE02BBB1B8400D20406 /* UIColor+.swift */; };
 		1D4CFE0E2C3162E100DBA7C4 /* DetailVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4CFE0D2C3162E100DBA7C4 /* DetailVideoView.swift */; };
+		1D4CFE1A2C3261B100DBA7C4 /* CommentDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4CFE192C3261B100DBA7C4 /* CommentDetailViewModel.swift */; };
 		1D73D3992BF464AB00A9B782 /* VideoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D73D3982BF464AB00A9B782 /* VideoTableViewCell.swift */; };
 		1D73D39C2BF464F100A9B782 /* ChannelCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D73D39B2BF464F100A9B782 /* ChannelCollectionViewCell.swift */; };
 		1D73D39E2BF464F700A9B782 /* TabButtonCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D73D39D2BF464F700A9B782 /* TabButtonCollectionViewCell.swift */; };
@@ -23,7 +24,6 @@
 		1DAEB70C2C14329500BB6843 /* CommentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DAEB70B2C14329500BB6843 /* CommentDetailView.swift */; };
 		1DAEB7102C16ED8D00BB6843 /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DAEB70F2C16ED8D00BB6843 /* CommentTableViewCell.swift */; };
 		1DAEB71C2C19EF1400BB6843 /* CommentDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DAEB71B2C19EF1400BB6843 /* CommentDTO.swift */; };
-		1DAEB71E2C1CA92E00BB6843 /* DetailVideoTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DAEB71D2C1CA92E00BB6843 /* DetailVideoTableView.swift */; };
 		1DB5088E2BCD49410096A747 /* MainTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB5088D2BCD49410096A747 /* MainTabController.swift */; };
 		1DB508912BCD4A190096A747 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB508902BCD4A190096A747 /* HomeViewController.swift */; };
 		1DB508932BCD4A200096A747 /* ShortsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB508922BCD4A200096A747 /* ShortsViewController.swift */; };
@@ -72,6 +72,7 @@
 		1D3CAADD2BBB166300D20406 /* LoginTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTextField.swift; sourceTree = "<group>"; };
 		1D3CAAE02BBB1B8400D20406 /* UIColor+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+.swift"; sourceTree = "<group>"; };
 		1D4CFE0D2C3162E100DBA7C4 /* DetailVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailVideoView.swift; sourceTree = "<group>"; };
+		1D4CFE192C3261B100DBA7C4 /* CommentDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentDetailViewModel.swift; sourceTree = "<group>"; };
 		1D73D3982BF464AB00A9B782 /* VideoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoTableViewCell.swift; sourceTree = "<group>"; };
 		1D73D39B2BF464F100A9B782 /* ChannelCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelCollectionViewCell.swift; sourceTree = "<group>"; };
 		1D73D39D2BF464F700A9B782 /* TabButtonCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabButtonCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -84,7 +85,6 @@
 		1DAEB70B2C14329500BB6843 /* CommentDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentDetailView.swift; sourceTree = "<group>"; };
 		1DAEB70F2C16ED8D00BB6843 /* CommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
 		1DAEB71B2C19EF1400BB6843 /* CommentDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentDTO.swift; sourceTree = "<group>"; };
-		1DAEB71D2C1CA92E00BB6843 /* DetailVideoTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailVideoTableView.swift; sourceTree = "<group>"; };
 		1DB5088D2BCD49410096A747 /* MainTabController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabController.swift; sourceTree = "<group>"; };
 		1DB508902BCD4A190096A747 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		1DB508922BCD4A200096A747 /* ShortsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortsViewController.swift; sourceTree = "<group>"; };
@@ -317,6 +317,8 @@
 				BEB9CB9C2C2FAA730072E5CB /* DetailViewModel.swift */,
 				1DAEB71D2C1CA92E00BB6843 /* DetailVideoTableView.swift */,
 				1DAEB70B2C14329500BB6843 /* CommentDetailView.swift */,
+				1DAEB70B2C14329500BB6843 /* CommentDetailView.swift */,
+				1D4CFE192C3261B100DBA7C4 /* CommentDetailViewModel.swift */,
 				1DAEB70F2C16ED8D00BB6843 /* CommentTableViewCell.swift */,
 			);
 			path = DetailViedeoView;
@@ -490,7 +492,6 @@
 				BEE303332C1E872F00257E9F /* Int+.swift in Sources */,
 				1DE69EF92BB187590001CAB4 /* LoginSuccessViewController.swift in Sources */,
 				1DE69EE12BB185750001CAB4 /* AppDelegate.swift in Sources */,
-				1DAEB71E2C1CA92E00BB6843 /* DetailVideoTableView.swift in Sources */,
 				1DAEB71C2C19EF1400BB6843 /* CommentDTO.swift in Sources */,
 				1D73D39E2BF464F700A9B782 /* TabButtonCollectionViewCell.swift in Sources */,
 				1DB508972BCD4A310096A747 /* SubscribeViewController.swift in Sources */,
@@ -502,6 +503,7 @@
 				1DD0F7D52C0D958600C5AB80 /* VideoTableView.swift in Sources */,
 				1DAEB7102C16ED8D00BB6843 /* CommentTableViewCell.swift in Sources */,
 				1D3CAADC2BBB13F000D20406 /* UILabel+.swift in Sources */,
+				1D4CFE1A2C3261B100DBA7C4 /* CommentDetailViewModel.swift in Sources */,
 				1DB508992BCD4A390096A747 /* StorageViewController.swift in Sources */,
 				BE788E1F2C1858C0009D4185 /* String+.swift in Sources */,
 				1DE69EE32BB185750001CAB4 /* SceneDelegate.swift in Sources */,

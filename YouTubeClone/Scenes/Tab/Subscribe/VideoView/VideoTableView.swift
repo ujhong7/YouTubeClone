@@ -191,5 +191,3 @@ extension VideoTableView: UITableViewDelegate {
         presentVideoViewController(with: item)
     }
 }
-
-

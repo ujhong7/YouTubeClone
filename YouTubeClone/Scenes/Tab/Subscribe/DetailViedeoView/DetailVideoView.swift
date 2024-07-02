@@ -8,10 +8,17 @@
 import UIKit
 import WebKit
 
+protocol DetailVideoViewDelegate: AnyObject {
+    func handleCommentViewTap()
+    func handlePanGesture(_ gesture: UIPanGestureRecognizer)
+}
+
 class DetailVideoView: UIView {
     
     // MARK: - Properties
     
+    weak var delegate: DetailVideoViewDelegate?
+
     private(set) lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 2
@@ -145,14 +152,14 @@ class DetailVideoView: UIView {
     
     // 🚨
     @objc private func handleCommentViewTap() {
-        // Comment view tap handling logic
-        
+        print(#function)
+        delegate?.handleCommentViewTap()
     }
     
     // 🚨
     @objc private func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
-        // Pan gesture handling logic
-        
+        print(#function)
+        delegate?.handlePanGesture(gesture)
     }
     
     // MARK: - Auto Layout
