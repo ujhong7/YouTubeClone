@@ -1,5 +1,5 @@
 //
-//  CommentDTO.swift
+//  CommentModel.swift
 //  YouTubeClone
 //
 //  Created by yujaehong on 6/12/24.

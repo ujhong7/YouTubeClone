@@ -9,7 +9,7 @@ import Foundation
 
 // UUID 란?
 
-struct YouTubeDTO: Codable {
+struct YouTubeModel: Codable {
     let items: [Item]
 }
 

@@ -73,16 +73,16 @@ extension ChannelCollectionView: UICollectionViewDelegate {
             
             cell.changeSelectedBackgroundColor()
             
-            let id = channel[indexPath.row].id
+            let channelId = channel[indexPath.row].id
             
-            APIManager.shared.requestSubscribeVideoData(id: id) { result in
-                switch result {
-                case .success(let data):
-                    self.onDataReceived?(data)
-                case .failure(_):
-                    print(#fileID, #function, #line, "🐧 결과값이 존재하지 않습니다.")
-                }
-            }
+            APIManager.shared.requestSubscribeVideoData(channelId: channelId) { result in
+                           switch result {
+                           case .success(let data):
+                               self.onDataReceived?(data)
+                           case .failure(_):
+                               print(#fileID, #function, #line, "🐧 결과값이 존재하지 않습니다.")
+                           }
+                       }
         }
         
         // 선택된 셀의 인덱스 업데이트

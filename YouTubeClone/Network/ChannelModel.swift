@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ChannelDTO: Codable {
+struct ChannelModel: Codable {
     let items: [ChannelItem]
 }
 
