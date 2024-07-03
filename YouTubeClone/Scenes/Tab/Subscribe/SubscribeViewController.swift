@@ -35,13 +35,6 @@ final class SubscribeViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
-    /// 구독 클릭시 생성되는 테이블뷰
-    private var subscribeTableView: VideoTableView = {
-        let view = VideoTableView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
 
 //    private var refreshControl = UIRefreshControl()
     
@@ -84,23 +77,25 @@ final class SubscribeViewController: UIViewController {
         view.addSubview(channelCollectionView)
         view.addSubview(tabViewCollectionView)
         view.addSubview(videoTableView)
-        view.addSubview(subscribeTableView)
         
         videoTableView.parentViewController = self
         
         videoTableView.requestInSubscribeVC()
         
-        /// 구독 채널 클릭했을때 좌측 상단 네비게이션바 버튼 수정 + 테이블뷰 생성
         channelCollectionView.onDataReceived = { [weak self] videos in
+            
+//            self?.tabViewCollectionView.isHidden = true
             
             if let channelTitle = videos.first?.snippet.channelTitle {
                 self?.setupSubscribeLeftNavigationItem(title: channelTitle)
             }
             
-            self?.subscribeTableView.updateVideos(videos) {
-                self?.showSubscribeTableView()
-            }
+            self?.videoTableView.updateVideos(videos, completion: {
+                //
+            })
+            
         }
+        
     }
     
     /// 구독 채널 클릭시 좌측 상단 네비게이션바 설정
@@ -115,32 +110,12 @@ final class SubscribeViewController: UIViewController {
         let barButtonItem = UIBarButtonItem(customView: button)
         navigationItem.leftBarButtonItem = barButtonItem
     }
-    
-    private func showSubscribeTableView() {
-        [tabViewCollectionView, videoTableView].forEach { view in
-            view.isHidden = true
-        }
-        animateSubscribeTableView(isShow: true)
-    }
 
     /// 구독 채널을 눌렀을때 올라오는 테이블뷰를 닫기 위함
     @objc private func hideSubscribeTableView() {
         setupLeftNavigationItem()
-        [tabViewCollectionView, videoTableView].forEach { view in
-            view.isHidden = false
-        }
-        channelCollectionView.deselectCell() 
-        animateSubscribeTableView(isShow: false)
-    }
-    
-    private func animateSubscribeTableView(isShow: Bool) {
-        DispatchQueue.main.async { [weak self] in
-            self?.subscribeTableViewTopConstraint.constant = isShow ? 0 : 800
-            
-//            UIView.animate(withDuration: 0.3) {
-//                self?.view.layoutIfNeeded()
-//            }
-        }
+        channelCollectionView.deselectCell()
+        videoTableView.requestInVideoVC()
     }
     
 //    private func setupRefreshControl() {
@@ -187,8 +162,6 @@ extension SubscribeViewController {
     private func setupAutoLayout() {
         channelViewHeightConstraint = channelCollectionView.heightAnchor.constraint(equalToConstant: UI.channelViewHeight)
         tabViewHeightConstraint = tabViewCollectionView.heightAnchor.constraint(equalToConstant: UI.tabViewHeight)
-        subscribeTableViewTopConstraint = subscribeTableView.topAnchor.constraint(equalTo: channelCollectionView.bottomAnchor, constant: 800)
-
         
         NSLayoutConstraint.activate([
             channelCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -206,12 +179,7 @@ extension SubscribeViewController {
             videoTableView.topAnchor.constraint(equalTo: tabViewCollectionView.bottomAnchor),
             videoTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             videoTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            videoTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            
-            subscribeTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            subscribeTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            subscribeTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            subscribeTableViewTopConstraint
+            videoTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])
     }
     
