@@ -41,6 +41,14 @@ final class ChannelCollectionView: UICollectionView {
         delegate = self
     }
     
+    func deselectCell() {
+         if let selectedIndexPath = selectedIndexPath,
+            let previousCell = cellForItem(at: selectedIndexPath) as? ChannelCollectionViewCell {
+             previousCell.resetBackgroundColor()
+         }
+         selectedIndexPath = nil
+     }
+    
 }
 
 // MARK: - UICollectionViewDataSource

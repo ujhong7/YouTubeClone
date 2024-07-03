@@ -129,6 +129,7 @@ final class SubscribeViewController: UIViewController {
         [tabViewCollectionView, videoTableView].forEach { view in
             view.isHidden = false
         }
+        channelCollectionView.deselectCell() 
         animateSubscribeTableView(isShow: false)
     }
     
@@ -136,9 +137,9 @@ final class SubscribeViewController: UIViewController {
         DispatchQueue.main.async { [weak self] in
             self?.subscribeTableViewTopConstraint.constant = isShow ? 0 : 800
             
-            UIView.animate(withDuration: 0.3) {
-                self?.view.layoutIfNeeded()
-            }
+//            UIView.animate(withDuration: 0.3) {
+//                self?.view.layoutIfNeeded()
+//            }
         }
     }
     

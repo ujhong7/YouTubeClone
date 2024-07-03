@@ -12,6 +12,7 @@ protocol BaseAPI: TargetType {
 }
 
 extension BaseAPI {
+    
     var baseURL: String {
         return APIConstants.baseURL
     }
@@ -23,29 +24,6 @@ extension BaseAPI {
     var path: String {
         return urlPath
     }
-    
-    func asURLRequest() throws -> URLRequest {
-        let url = try baseURL.asURL()
-        var urlRequest = try URLRequest(url: url.appendingPathComponent(path), method: method)
-        
-        if let headers = headers {
-            urlRequest.headers = headers
-        }
-        
-        switch parameters {
-        case .query(let query):
-            var components = URLComponents(string: url.appendingPathComponent(path).absoluteString)
-            components?.queryItems = query.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
-            urlRequest.url = components?.url
-            
-        case .requestBody(let body):
-            urlRequest.httpBody = try JSONEncoder().encode(body)
-            
-        case .requestPlain:
-            break
-        }
-        
-        return urlRequest
-    }
+
 }
 

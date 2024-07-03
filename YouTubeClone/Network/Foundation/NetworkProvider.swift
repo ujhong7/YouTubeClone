@@ -24,5 +24,6 @@ final class NetworkProvider<API: BaseAPI> {
                 }
             }
     }
+    
 }
 
