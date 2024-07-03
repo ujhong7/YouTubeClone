@@ -95,7 +95,7 @@ class DetailVideoView: UIView {
     
     private(set) var tableView: VideoTableView = {
         let tableView = VideoTableView()
-        tableView.isPresentAnimation = false
+        tableView.viewModel.isPresentAnimation = false
         return tableView
     }()
     

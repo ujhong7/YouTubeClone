@@ -14,21 +14,14 @@ final class VideoTableView: UITableView {
     
     weak var parentViewController: UIViewController?
     
-    /// 유튜브 API 데이터
-    private var items: [Item] = []
-    
-    ///
-    private var channelItems: [String: ChannelItem] = [:]
-    
-    /// present 애니메이션 설정해주기 위한 프로퍼티
-    var isPresentAnimation: Bool = true
+    var viewModel = VideoTableViewModel()
     
     // MARK: - Init
     
     init() {
         super.init(frame: .zero, style: .plain)
         configureTableView()
-        //requestYouTubeAPI()
+        bindViewModel()
     }
     
     required init?(coder: NSCoder) {
@@ -44,24 +37,15 @@ final class VideoTableView: UITableView {
         delegate = self
     }
     
-
-    func updateVideos(_ videos: [Item], completion: @escaping () -> Void) {
-        self.items = videos
-        
-        // channelId를 추출하고 requestChannelProfileImageAPI 호출
-        self.items.forEach { item in
-            // 'Item' 모델에 'channelId'가 있다고 가정
-            self.requestChannelProfileImageAPI(with: item.snippet.channelId)
+    private func bindViewModel() {
+        viewModel.updateTableViewClosure = { [weak self] in
+            self?.reloadData()
         }
-        
-        reloadData()
-        completion()
     }
     
-    // ☀️ private 프로퍼티를 다른곳에서 사용하는 방법...메서드를 만들자
-    //    func getVideoItems() -> [Item] {
-    //        return items
-    //    }
+    func updateVideos(_ videos: [Item], completion: @escaping () -> Void) {
+        viewModel.updateVideos(videos, completion: completion)
+    }
     
     func presentVideoViewController(with item: Item) {
         
@@ -72,83 +56,27 @@ final class VideoTableView: UITableView {
         let videoViewController = DetailVideoViewController(viewController: parentViewController,
                                                             item: item,
                                                             videoURL: url)
-
-//        videoViewController.videoURL = url
-//        videoViewController.item = item  // Item 객체를 전달
-//        videoViewController.detailVideoView?.tableView.parentViewController = parentViewController
         
-        // 채널이미지, 채널구독자 수
-        if let channelItem = channelItems[item.snippet.channelId] {
-            videoViewController.channelItem = channelItem  // ChannelItem 객체를 전달
+        if let channelItem = viewModel.channelItems[item.snippet.channelId] {
+            videoViewController.channelItem = channelItem
         }
         
         videoViewController.modalPresentationStyle = .overFullScreen
         videoViewController.modalTransitionStyle = .coverVertical
         
-        // ⭐️
         if let parentVC = parentViewController as? SubscribeViewController {
             parentVC.dismiss(animated: false) {
-                parentVC.present(videoViewController, animated: self.isPresentAnimation)
+                parentVC.present(videoViewController, animated: self.viewModel.isPresentAnimation)
             }
         }
     }
     
     func requestInSubscribeVC() {
-        requestYouTubeAPI()
+        viewModel.fetchVideos()
     }
     
     func requestInVideoVC() {
-        requestYouTubeAPI()
-    }
-    
-}
-
-// MARK: - Networking
-
-extension VideoTableView {
-    
-    private func requestYouTubeAPI() {
-        print(#function)
-        APIManager.shared.requestYouTubeAPIData { [weak self] result in
-            switch result {
-            case .success(let data):
-                dump(data)
-                DispatchQueue.main.async {
-                    self?.items = data
-                    
-                    self?.reloadData()
-                    //self?.refreshControl.endRefreshing() // refresh종료를 위해..
-                }
-                
-                // channelId를 추출하고 requestChannelProfileImageAPI 호출
-                data.forEach { item in
-                    // 'Item' 모델에 'channelId'가 있다고 가정
-                    self?.requestChannelProfileImageAPI(with: item.snippet.channelId)
-                }
-                
-            case .failure(let error):
-                print("데이터를 받아오는데 실패했습니다: \(error)")
-                //self?.refreshControl.endRefreshing()
-            }
-        }
-    }
-    
-    private func requestChannelProfileImageAPI(with channelId: String) {
-        print(#function)
-        APIManager.shared.requestChannelAPIData(channelId: channelId) { [weak self] result in
-            switch result {
-            case .success(let data):
-                dump(data)
-                DispatchQueue.main.async {
-                    // channelId를 키로 하여 channelItems 딕셔너리에 추가
-                    //                    self?.channelItems[channelId] = data
-                    self?.channelItems[channelId] = data.first
-                    self?.reloadData() // 새로운 데이터로 테이블 뷰 갱신
-                }
-            case .failure(let error):
-                print("에러: \(error)")
-            }
-        }
+        viewModel.fetchVideos()
     }
     
 }
@@ -158,7 +86,7 @@ extension VideoTableView {
 extension VideoTableView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count
+        return viewModel.items.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -168,9 +96,9 @@ extension VideoTableView: UITableViewDataSource {
             return cell
         }
         
-        let item = items[indexPath.row]
+        let item = viewModel.items[indexPath.row]
         
-        if let channelItem = channelItems[item.snippet.channelId] {
+        if let channelItem = viewModel.channelItems[item.snippet.channelId] {
             cell.configure(item: item, channelItem: channelItem)
         }
         
@@ -187,7 +115,7 @@ extension VideoTableView: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let item = items[indexPath.row]
+        let item = viewModel.items[indexPath.row]
         presentVideoViewController(with: item)
     }
 }
