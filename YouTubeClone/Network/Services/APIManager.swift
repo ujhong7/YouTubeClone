@@ -51,7 +51,7 @@ class APIManager {
         }
     }
     
-    // MARK: - 구독 클릭 후 데이터 가져오기
+    // MARK: - 구독채널 클릭 후 데이터 가져오기
     func requestSubscribeVideoData(channelId: String, completion: @escaping (Result<[Item], AFError>) -> Void) {
         networkProvider.request(.fetchSubscribeVideos(channelId: channelId)) { (result: Result<YouTubeModel, AFError>) in
             switch result {

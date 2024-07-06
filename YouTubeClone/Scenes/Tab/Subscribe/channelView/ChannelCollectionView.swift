@@ -86,6 +86,7 @@ extension ChannelCollectionView: UICollectionViewDelegate {
             APIManager.shared.requestSubscribeVideoData(channelId: channelId) { result in
                            switch result {
                            case .success(let data):
+                               dump(data)
                                self.onDataReceived?(data)
                            case .failure(_):
                                print(#fileID, #function, #line, "🐧 결과값이 존재하지 않습니다.")

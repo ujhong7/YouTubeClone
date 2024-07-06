@@ -37,6 +37,7 @@ final class VideoTableViewModel {
             switch result {
             case .success(let data):
                 DispatchQueue.main.async {
+                    dump(data)
                     self?.items = data
                     self?.updateTableViewClosure?()
                 }
