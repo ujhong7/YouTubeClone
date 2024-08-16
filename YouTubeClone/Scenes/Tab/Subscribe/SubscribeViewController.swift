@@ -83,9 +83,7 @@ final class SubscribeViewController: UIViewController {
         videoTableView.requestInSubscribeVC()
         
         channelCollectionView.onDataReceived = { [weak self] videos in
-            
-//            self?.tabViewCollectionView.isHidden = true
-            
+                    
             if let channelTitle = videos.first?.snippet.channelTitle {
                 self?.setupSubscribeLeftNavigationItem(title: channelTitle)
             }
